@@ -1,0 +1,21 @@
+* {
+  text-align: center;
+  font-family: 'Inter Regular';
+}
+
+:root {
+  --main-background: #F7F8FA;
+  --alt-background: #B8C5E3;
+  --dark-background: #334A80;
+  --main-text: #0D1321;
+  --alt-text: #7E78D2;
+  --light-text: #E7ECF6;
+  --highlighted-light-text: #F5F7FB;
+  --error: #D7263D;
+  --success: #2B9720;
+  --warning: #FFB30F;
+
+  --divider: #0D132140;
+  --pink: #FFBFB7;
+  --light-blue: #84E6F8;
+}
