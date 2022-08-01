@@ -33,7 +33,8 @@ draw.text(coordinates - size / 2, text, fill=fill, stroke_width=0,
 
 logo = Image.open('./assets/Special/Gold texture.png')
 logo.paste(new, (int(logo.size[0]/2) - int(imgsize[0]/2), int(logo.size[1]/2)- int(imgsize[1]/2)), new)"""
-
+path = './logo.png'
+new.save(path, 'PNG')
 new.save('logo.ico',format = 'ICO', sizes=[(64,64)])
 
 """temp = self.card

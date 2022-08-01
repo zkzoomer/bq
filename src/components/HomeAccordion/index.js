@@ -23,10 +23,6 @@ const SectionTitle = styled.div`
 `
 
 const AccordionContainer = styled.div`
-    /* display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center; */
     width: 100%;
 `
 
@@ -102,7 +98,7 @@ export default function HomeAccordion ({ items }) {
     return(
         <SectionWrapper>
             <SectionTitle>
-                We know you have <span style={{fontWeight:1000, fontFamily: 'Inter Bold'}}>questions</span>
+                We know you have questions
             </SectionTitle>
             <AccordionContainer>
                 {accordionElements.map((item, index) => {

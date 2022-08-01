@@ -12,7 +12,7 @@ const FooterWrapper = styled.div`
 const DividerLine = styled.hr`
     height: 100%;
     width: 90%;
-    border-top: 1px solid var(--divider);;
+    border-top: 1px solid var(--divider);
 `
 
 const FooterContents = styled.div`
