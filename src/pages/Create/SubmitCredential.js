@@ -1,7 +1,9 @@
-import { useState } from "react"
+/* global BigInt */
+import { useEffect, useState } from "react"
 import { NavLink } from "react-router-dom"
 import styled from "styled-components"
 import { SubmitButton } from "../../components/Button"
+import { isValidAddress } from "../../hooks/utils"
 
 const SectionTitle = styled.div`
     font-size: 1.7rem;
@@ -72,12 +74,15 @@ const InputBox = styled.input`
     text-align: justify;
     text-justify: inter-word;
 
+    transition: all 0.1s ease-in-out;
+
     ::placeholder {
         font-family: 'Inter ExtraLightItalic';
     }
 
     &:focus {
-        border: 1px solid var(--main-text);
+        outline: 0;
+        border: 1px solid var(--alt-text);
         box-shadow: 0 0 0 white;
         margin: 6px 0px 2px 0px;
     }
@@ -104,6 +109,7 @@ const PrizeInputCurrency = styled.div`
     font-weight: 800;
     font-family: 'Inter ExtraLight';
     margin-left: -20px;
+    padding-left: 15px;
 `
 
 const InlineNavLink = styled(NavLink)`
@@ -132,7 +138,7 @@ const ButtonWrapper = styled.div`
 
 
 export default function SubmitCredential () {
-    const [isEnabled, setIsEnabled] = useState(true);
+    const [isEnabled, setIsEnabled] = useState(false);
     const [submission, setSubmission] = useState({
         credentialName: {value: "", error: ""},
         testerURI: {value: "", error: ""},
@@ -147,22 +153,96 @@ export default function SubmitCredential () {
         { name: 'credentialName', placeholder: "Name your credential", label: 'Credential name' },
         { name: 'testerURI', placeholder: "Upload your test to IPFS and link it here", label: (<><InlineNavLink to='/help'>Supported markdown</InlineNavLink> tester URI</>) },
         { name: 'solutionHash', placeholder: "Solution hash of your multiple choice test", label: 'Answers tree root'},
-        { name: 'neededPass', placeholder: "Leave empty for not needed", label: 'NFT pass required to solve' },
-        /* { name: 'credentialLimit', label: 'Maximum number of credentials to give'}, */
+        { name: 'neededPass', placeholder: "Leave empty if not needed", label: 'NFT pass required to solve' },
         { name: 'timeLimit', placeholder: "Leave empty for unlimited", label: 'Test deadline' },
     ]
 
-    const handleChange = () => {
+    //returns an error string, empty if validated
+    const validate = ({name, value}) => {
+        // TODO: actually check if the smart contract supports `balanceOf`
+        if (name === 'neededPass') {
+            return (!isValidAddress(value) && !!value) ? 'Not a valid contract address' : ''
+        } 
 
+        if (name === 'solutionHash') {
+            const solutionHashRegex = /^[0-9]{70,78}$/
+            return (!solutionHashRegex.test(value) || BigInt(value) >= BigInt(2**256 - 1)) ? 
+                'Not a valid solution hash'
+            :
+                ''
+        }
+
+        if (name === 'credentialLimit') {
+            const isValidCredential = /^[0-9]{0,10}$/.test(value)
+            return !isValidCredential ? 
+                'Invalid credential limit'
+            : 
+                (isValidCredential && (BigInt(value) >= BigInt(2**32 - 1))) ? 'Credential limit too high' : ""
+        }
+        
+        // TODO: be able to set time limit on a calendar
+        if (name === 'timeLimit') {
+            const isValidTime = /^[0-9]{0,10}$/.test(value)
+            return !isValidTime ? 
+                'Invalid time limit'
+            :
+                (isValidTime && (BigInt(value) >= BigInt(2**32 - 1))) ? 'Time limit too high' : ""
+        }
+
+        if (name === 'prize') {
+            return value === "" ? "" 
+                :
+                !/^\d+\.?\d{0,2}$/.test(value) ? 'Invalid prize' : ""
+        }
+    }
+
+    useEffect(() => {
+        let _isEnabled = true
+        for (const [key, value] of Object.entries(submission)) {
+            // what is the value of value: value.value ? 
+            if (validate({name: key, value: value.value})) {  // current entries must have no errors
+                _isEnabled = false
+            }
+            if ( ['credentialName', 'testerURI', 'solutionHash'].includes(key) && !value.value ) {  // and necessary ones must be defined
+                _isEnabled = false
+                console.log('empty entries')
+            }
+        }
+        setIsEnabled(_isEnabled)
+    }, [submission])
+
+    // submits the tx onto the blockchain
+    const handleSubmit = () => {
+
+    }
+
+    const handleChange = event => {
+        const { name, value } = event.target;
+
+        const _error = validate({name,  value})
+
+        if(!_error) {  // if no errors, update clean with value
+            setSubmission( prevState => ({
+                ...prevState,
+                [name]: { value: value, error: "" }
+            }))
+        } else {  // if error, dont update value
+            setSubmission( prevState => ({
+                ...prevState,
+                [name]: { value: prevState[name].value, error: _error }
+            }))
+        }
     }
 
     const inputItems = inputs.map(( item, index) => {
         return(
-            <InputWrapper>
+            <InputWrapper key={item.name}>
                 <InputName>{item.label}</InputName>
                 <InputBox 
                     type='text'
+                    name={item.name}
                     id={item.name}
+                    required
                     onChange={handleChange}
                     placeholder={item.placeholder}
                     value={submission[item.name].value}
@@ -186,7 +266,9 @@ export default function SubmitCredential () {
                         <InputName>Max. credentials</InputName>
                         <InputBox              
                             type='text'
+                            name='credentialLimit'
                             id='credentialLimit'
+                            required
                             onChange={handleChange}
                             placeholder='Empty for unlimited'
                             value={submission.credentialLimit.value}
@@ -199,7 +281,9 @@ export default function SubmitCredential () {
                             <PrizeInputBoxWrapper>
                                 <InputBox 
                                     type='text'
+                                    name='prize'
                                     id='prize'
+                                    required
                                     onChange={handleChange}
                                     placeholder='0'
                                     value={submission.prize.value}
@@ -210,11 +294,10 @@ export default function SubmitCredential () {
                     </PrizeInputWrapper>
                 </SpecialInputRow>
                 <ButtonWrapper>
-                    <SubmitButton isEnabled={isEnabled}>
+                    <SubmitButton disabled={!isEnabled} isEnabled={isEnabled} onClick={handleSubmit}>
                         Create your credential
                     </SubmitButton>
                 </ButtonWrapper>
-                
             </SubmitBox>
         </>
     )
