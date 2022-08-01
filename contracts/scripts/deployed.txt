@@ -1,0 +1,3 @@
+Deployed Poseidon hashing contract at:  0x5392438bCA104ec38b24C18294b305a25E843ae7
+Deployed TesterCreator contract at:  0x2982B69159753d65Cea1D1D8E2E11C6C17698420
+TesterCreator deployed Credentials contract at: 0xdf1624d85d8a037e2e4d4ee7da38229eea61b544

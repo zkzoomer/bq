@@ -52,9 +52,11 @@ contract TesterCreator is SolutionVerifier, ERC165Storage, IERC721, IERC721Metad
     // Token symbol
     string private _symbol;
     
-    // TODO: properly pack the struct
     struct OnChainTester {
         uint256 solutionHash;
+        // TODO: add support for prizes as tokens: USDC, DAI, whatnot
+        // they could get added by the OWNER, checked the available via a public function
+        // a future DAO could control this functionality just like the owner
         uint256 prize;
         uint32 solvers;
         uint32 timeLimit;
