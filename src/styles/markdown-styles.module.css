@@ -1,3 +1,5 @@
+/* TODO: define all the styles to support a rich markdown document, w math too */
+
 .reactMarkDown {
   display: flex;
   flex-direction: column;

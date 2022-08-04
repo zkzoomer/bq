@@ -24,3 +24,10 @@ export const DEPLOYED_CONTRACTS = {
         Credentials: "0xdf1624d85d8a037e2e4d4ee7da38229eea61b544"
     }
 }
+
+export const DEPLOYED_CONTRACTS_ON_EXPLORER = {
+    80001: {
+        TesterCreator: 'https://mumbai.polygonscan.com/address/' + DEPLOYED_CONTRACTS[80001].TesterCreator + '#code',
+        Credentials: 'https://mumbai.polygonscan.com/address/' + DEPLOYED_CONTRACTS[80001].Credentials + '#code'
+    }
+}

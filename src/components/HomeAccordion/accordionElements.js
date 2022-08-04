@@ -1,6 +1,8 @@
 import styled from "styled-components"
 import { NavLink } from 'react-router-dom';
 import { theme } from "../../theme";
+import { MAX_ANSWERS, MAX_QUESTIONS } from "../../constants/values";
+import { DEPLOYED_CONTRACTS_ON_EXPLORER } from "../../constants/chains";
 
 const explanationBreakpoint = 1200;
 
@@ -84,6 +86,9 @@ const Image = styled.img`
     }
 `
 
+const testerLink = DEPLOYED_CONTRACTS_ON_EXPLORER[80001].TesterCreator
+const credentialLink = DEPLOYED_CONTRACTS_ON_EXPLORER[80001].Credentials
+
 export const accordionElements = [
     {
         name: "How do I gain a credential?",
@@ -92,17 +97,16 @@ export const accordionElements = [
                 The only way to get a credential is to correctly answer 
                 <span style={{fontWeight:800, fontFamily: 'Inter ExtraLight'}}> all </span>
                 the questions that make up its multiple choice test, esentially verifying that you know the subject.
-                You can look at some available credentials in the <InlineNavLink to="/browse">Browse</InlineNavLink> section.
+                You can look at some of the available credentials in the <InlineNavLink to="/browse">Browse</InlineNavLink> section.
             </ContentText>
         )
     },
     {
         name: "How do I check my credentials?",
         content: (
-            // TODO: add the polygonscan of the deployed version of the contract down here
             <ContentText>
                 When you receive a credential, you get sent a certificate as a 
-                <InlineLink href='https://mumbai.polygonscan.com/' target='_blank' aria_label='Twitter'> non-transferable NFT </InlineLink>
+                <InlineLink href={testerLink} target='_blank' aria_label='Polygonscan'> non-transferable NFT </InlineLink>
                 validating your skills. You can look at all your gained credentials inside your 
                 <InlineNavLink to="/profile"> Profile </InlineNavLink> page, as well as the credentials you created.
             </ContentText>
@@ -118,12 +122,25 @@ export const accordionElements = [
         )
     },
     {
+        name: "How many questions can a credential have?",
+        content: (
+            <ContentText>
+                <InlineLink href={testerLink} target='_blank' aria_label='Polygonscan'>Block Qualified Testers </InlineLink> support a 
+                maximum of {MAX_QUESTIONS} questions, each with a maximum of {MAX_ANSWERS} answers.
+                <br />
+                If we do some math, we can see that for a simple multiple choice test with 10 questions, each with 4 possible answers, 
+                you would have a<span style={{fontWeight:800, fontFamily: 'Inter ExtraLight'}}> one in a million chance </span>
+                of guessing it right. Increase the number of questions to 20, and that chance becomes
+                <span style={{fontWeight:800, fontFamily: 'Inter ExtraLight'}}> one in a trillion</span>.
+            </ContentText>
+        )
+    },
+    {
         name: "How can I verify a credential?",
         content: (
-            // TODO: add the polygonscan of the deployed version of the contract down here
             <ContentText>
                 Each non-transferable Credential NFT is linked to its corresponding 
-                <InlineLink href='https://mumbai.polygonscan.com/' target='_blank' aria_label='Twitter'> non-transferable Tester NFT. </InlineLink>
+                <InlineLink href={credentialLink} target='_blank' aria_label='Polygonscan'> non-transferable Tester NFT. </InlineLink>
                 The only way to gain a credential is to answer all of its questions correctly. Thanks to ZK-SNARKS, these answers get
                 posted privately, so you can be sure that credentials cannot be attained by copying other's answers.
             </ContentText>
@@ -137,6 +154,17 @@ export const accordionElements = [
                 Markdown document containing the questions, and specify the behavior of your multiple-choice test. 
                 <br />
                 To know what constitutes as a supoorted Markdown document, you can check the <InlineNavLink to="/help"> Help </InlineNavLink> page.
+            </ContentText>
+        )
+    },
+    {
+        name: "Can't I just copy a valid transaction?",
+        content: (
+            <ContentText>
+                <span style={{fontWeight:800, fontFamily: 'Inter ExtraLight'}}>No</span>, 
+                as by solving a tester the transaction never shows the answers, but simply provides a proof of their knowledge. 
+                The additional use of a cryptographic salt ensues that each solving transaction cannot be replicated, 
+                while keeping the answers perfectly private. See below for more information.
             </ContentText>
         )
     },
@@ -162,14 +190,14 @@ export const accordionElements = [
                     Instead, what you do is<span style={{fontWeight:800, fontFamily: 'Inter ExtraLightItalic'}}> you prove your knowledge </span>
                     of an answer tree such that, when its root is hashed alongside a random salt, it returns a <ExplanationTextItalics> solving hash. </ExplanationTextItalics>
                     <br />
-                    Your answers remain<span style={{fontWeight:800, fontFamily: 'Inter ExtraLightItalic'}}> private </span>, while the
+                    Your answers remain<span style={{fontWeight:800, fontFamily: 'Inter ExtraLightItalic'}}> private</span>, while the
                     <ExplanationTextItalics> solving hash </ExplanationTextItalics>and<ExplanationTextItalics> salt </ExplanationTextItalics>are
                     public. The smart contract checks if your<ExplanationTextItalics> solving hash </ExplanationTextItalics>is the result of hashing 
                     your<ExplanationTextItalics> salt </ExplanationTextItalics>and the<ExplanationTextItalics> solution hash </ExplanationTextItalics>
                     defined earlier, and only then does it grant you the credential.
                     <br />
                     By voiding the<ExplanationTextItalics> salts </ExplanationTextItalics>that have been used, we can ensure the only way to gain a credential 
-                    is to solve a test, and cheating becomes unfeasible.
+                    is by solving the test, as cheating becomes unfeasible.
 
                 </ExplanationText>
             </ExplanationSection>

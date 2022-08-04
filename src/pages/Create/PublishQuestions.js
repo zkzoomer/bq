@@ -1,15 +1,27 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { NavLink } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
-import { FaPlus, FaMapPin } from 'react-icons/fa'
+import { FaPlus, FaArrowRight } from 'react-icons/fa'
 import { CopyIcon } from '@chakra-ui/icons'
 import { PinAngle } from '@styled-icons/bootstrap/PinAngle'
+import Spinner from 'react-bootstrap/Spinner';
 
-import { AddElementButton, UploadButton } from "../../components/Button"
+import { setModal } from '../../state/modal/reducer';
+import { setError } from '../../state/error/reducer';
+import { AddElementButton, AdvanceSectionButton, UploadButton } from "../../components/Button"
 import Question from "./Question"
 import { MAX_QUESTIONS, MAX_ANSWERS } from "../../constants/values"
 import { theme } from "../../theme"
-import { getNumberOfQuestions, getSolutionHash, generateMarkdownFile, getNumberOfAnswers, getNullAnswersDict, getNullAnswersFirstEmptyDict, shiftKeysInAnswersDict } from "./helpers"
+import { 
+    getNumberOfQuestions, 
+    getSolutionHash, 
+    generateMarkdownFile, 
+    getNumberOfAnswers, 
+    getNullAnswersDict, 
+    getNullAnswersFirstEmptyDict, 
+    shiftKeysInAnswersDict 
+} from "./helpers"
 
 const PublishWrapper = styled.div`
     width:  100%;
@@ -59,6 +71,7 @@ const QuestionsWrapper = styled.div`
 
 const ButtonsWrapper = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     padding-top: 50px;
@@ -72,8 +85,107 @@ const Pin = styled(PinAngle)`
     height: 55%;
 `
 
+const noErrors = []
+for (var i = 1; i <= MAX_QUESTIONS; i++) {
+    noErrors.push(false)
+}
 
-export default function PublishQuestions ({ test, setTest, correctAnswers, setCorrectAnswers, setSubmission, advanceSection }) {
+export default function PublishQuestions ({ test, setTest, correctAnswers, setCorrectAnswers, submission, setSubmission, advanceSection }) {
+
+    const [errors, setErrors] = useState(noErrors);
+    const [awaiting, setAwaiting] = useState(false);
+
+    const dispatch = useDispatch()
+
+    /* useEffect(() => {
+        // new answers, we define a new solution hash
+        const hash = getSolutionHash(correctAnswers)
+        setSolutionHash(hash)
+    }, [correctAnswers]) */
+
+    const handlePinClick = () => {
+        setAwaiting(true)
+
+        // 1 - check if all the questions are defined
+        let allQuestionsDefinedAndAnswered = true;
+        const _errors = [...noErrors];
+        Object.entries(test).map(([ key, value ]) => {
+            if (value.Q === "") {
+                allQuestionsDefinedAndAnswered = false
+                _errors[parseInt(key.substring(1)) - 1] = true
+                return
+            }
+            Object.entries(value.A).map(([ _key, _value ]) => {
+                if (_value === "") {
+                    allQuestionsDefinedAndAnswered = false
+                    _errors[parseInt(key.substring(1)) - 1] = true
+                    return
+                }
+            })
+        })
+        if ( !allQuestionsDefinedAndAnswered ) {
+            setErrors(_errors)
+            dispatch(setError(['Some questions are not defined', 'Make sure all questions and answers have their content defined']))
+            dispatch(setModal('error'))
+            setAwaiting(false)
+            return
+        }
+
+        // 2 - check if correctAnswer is defined for all defined questions
+        const nQuestions = getNumberOfQuestions(test)
+        for ( var i = 0; i < nQuestions; i++) {
+            if (correctAnswers[i] === 0) {
+                allQuestionsDefinedAndAnswered = false
+                _errors[i] = true
+            }
+        }
+        if ( !allQuestionsDefinedAndAnswered ) {
+            setErrors(_errors)
+            dispatch(setError(['Some questions are not answered', 'Make sure you defined all the correct answers for your questions']))
+            dispatch(setModal('error'))
+            setAwaiting(false)
+            return
+        }
+
+        setErrors(noErrors)
+
+        console.log('on ipfs stage')
+
+        setAwaiting(false)
+
+        /*
+            1) check if all questions are defined: must have content on Q and all A defined -> if not, set error on those not defined, show error modal
+            setErrors( to those )
+            dispatch(setError(['Some questions are not defined', 'Make sure all questions and answers are defined']))
+            dispatch(setModal('error'))
+            setAwaiting(false)
+            return
+
+            2) check if correctAnswer is defined for all defined questions -> if not, set error on those not defined, show error modal
+            setErrors( to those )
+            dispatch(setError(['Some questions are not answered', 'Make sure all the correct answers for your questions are defined']))
+            dispatch(setModal('error'))
+            setAwaiting(false)
+            return
+            
+            --> both checks clear: IPFS stage
+            1) transform raw contents into supported markdown, defined as: 
+            questions start with: \nBLOCK_QUALIFIED_QUESTION_START\n
+            answers start with: \nBLOCK_QUALIFIED_ANSWER_START\n
+                * just starting, nothing defining the end of them but the next start
+            2) save this file as tester.md
+            3) pin to IPFS, return the content link
+            4) generate the solution hash, setting 0 for all non defined questions (those needed to reach MAX_QUESTIONS)
+            4) setSubmission for submission._pinnedTester, testerURI = pinned result; solutionHash = obtained hash
+            5) setAwaiting(false)
+        */
+    }
+
+    const handleCopyClick = () => {
+        const pin = submission._pinnedTester
+        navigator.clipboard.writeText(pin)
+    }
+
 
     const addQuestion = () => {
         let len = getNumberOfQuestions(test)
@@ -131,9 +243,9 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
         const questionIndex = parseInt(questionKey.substring(1)) - 1
         setCorrectAnswers( prevState => {
             const _answer = prevState[questionIndex]
-            let answer
-            if ( _answer === null || toRemove === answer) {
-                answer = null
+            let answer = 0
+            if ( _answer === 0 || toRemove === answer) {
+                answer = 0
             } else if (toRemove > _answer) {
                 answer = _answer
             } else if (toRemove < _answer) {
@@ -174,11 +286,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
         })
     }
 
-    const handleCopyClick = () => {
-        const hash = getSolutionHash(correctAnswers)
-        navigator.clipboard.writeText(hash.toString())
-    }
-
     const questionBoxes = Object.entries(test).map(( [key, value] ) => {
         return(
             value.Q === null ?
@@ -196,7 +303,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                     setAnswerText={(answerKey, answerText) => setAnswerText(key, answerKey, answerText)}
                     isRemovable={test.Q2.Q !== null}
                     removeQuestion={() => { removeQuestion(key) }}
-                    hasError={false}
+                    hasError={errors[parseInt(key.substring(1)) - 1]}
                 />
         )
     })
@@ -223,12 +330,28 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                 }
             </QuestionsWrapper>
             <ButtonsWrapper>
-                <UploadButton key='hash' disabled={!correctAnswers.length} isEnabled={!!correctAnswers.length} onClick={handleCopyClick}>
+                {/* <UploadButton key='hash' disabled={!correctAnswers.length} isEnabled={!!correctAnswers.length} onClick={handleCopyClick}>
                     <CopyIcon />&nbsp;&nbsp;Copy solution hash
-                </UploadButton>
-                <UploadButton key='ipfs' isEnabled={true}>
-                    <Pin />&nbsp;&nbsp;Pin to IPFS
-                </UploadButton>
+                </UploadButton> */}
+                {
+                    submission._pinnedTester ? 
+                        <>
+                            <UploadButton key='hash' onClick={handleCopyClick}>
+                                <CopyIcon />&nbsp;&nbsp;Copy IPFS link
+                            </UploadButton>
+                            <AdvanceSectionButton onClick={advanceSection}>Advance section&nbsp;&nbsp;<FaArrowRight /></AdvanceSectionButton>
+                        </>
+                    : 
+                        <UploadButton key='ipfs' disabled={awaiting} onClick={handlePinClick}>
+                            {
+                                awaiting ? 
+                                    <Spinner animation="border" size="m" />
+                                :
+                                    <><Pin />&nbsp;&nbsp;Pin to IPFS</>
+                            }
+                        </UploadButton>
+                }
+                
             </ButtonsWrapper>
             {/* 
             question wrapper as many as defined - inside it 

@@ -28,11 +28,10 @@ for (var i = 1; i <= MAX_QUESTIONS; i++) {
         Q: null,
         A: getNullAnswersDict('Q' + i)
     }
-    initialCorrectAnswers.push(null)
+    initialCorrectAnswers.push(0)
 }
 
 // publish your questions to IPFS / submit your credential to the blockchain
-
 export function Create () {
     const [progressBarState, setProgressBarState] = useState({
         active: 1,
@@ -48,6 +47,7 @@ export function Create () {
         credentialLimit: {value: "", error: ""},
         timeLimit: {value: "", error: ""},
         prize: {value: "", error: ""},
+        _pinnedTester: "",  // pinned by the user when making a test
     })
 
     // Add one question on first load if there are none defined
@@ -76,6 +76,7 @@ export function Create () {
                         setTest={setTest}
                         correctAnswers={correctAnswers}
                         setCorrectAnswers={setCorrectAnswers}
+                        submission={submission}
                         setSubmission={setSubmission}
                         advanceSection={() => setProgressBarState(prevState => ({ ...prevState, active: 2 }))}    
                     /> 

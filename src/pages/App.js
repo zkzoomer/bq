@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
-import { setModal } from '../state/modal/reducer';
 import { useDisclosure } from "@chakra-ui/react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import { setModal } from '../state/modal/reducer';
 import TopLevelModals from "../components/TopLevelModals";
 import Header from '../components/Header';
 import { theme } from '../theme';
@@ -39,10 +39,10 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <TopLevelModals isOpen={isOpen} closeModal={() => { onClose(); dispatch(setModal(""))}} />
       <Sidebar />
       <Header onOpen={onOpen}/>
       <BodyWrapper>  
-        <TopLevelModals isOpen={isOpen} closeModal={() => { onClose(); dispatch(setModal(""))}} />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
