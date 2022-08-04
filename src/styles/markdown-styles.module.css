@@ -1,0 +1,25 @@
+.reactMarkDown {
+  display: flex;
+  flex-direction: column;
+  white-space: pre-wrap;
+  text-align: justify;
+  text-justify: inter-word;
+  align-items: start;
+  justify-content: start;
+}
+
+.reactMarkDown h1 {
+  font-size: 2rem;
+}
+
+.reactMarkDown ul {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  list-style: disc outside none;
+}
+
+.reactMarkDown ul li {
+  margin-left: 2em;
+  display: list-item;
+  text-align: -webkit-match-parent;
+}

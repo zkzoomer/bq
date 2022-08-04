@@ -85,6 +85,10 @@ const SidebarLink = styled(NavLink).attrs({
         color: var(--highlighted-light-text);
         text-shadow: 2px 2px var(--main-text);
     }
+
+    &:hover {
+        color: var(--light-text);
+    }
 `
 
 const IconWrapper = styled.div`

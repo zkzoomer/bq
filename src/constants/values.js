@@ -1,0 +1,6 @@
+export const MAX_QUESTIONS = 64;
+export const MAX_ANSWERS = 6;
+
+export const MAX_UINT32 = "4294967295";
+
+export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000"

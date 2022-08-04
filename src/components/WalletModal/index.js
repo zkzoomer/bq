@@ -21,6 +21,7 @@ export default function WalletModal ({ isOpen, closeModal }) {
         window.localStorage.setItem("provider", type);
     };
 
+    // TODO: coinbase wallet sending redirect on mobile, WHY ??????
     return (
     <Modal isOpen={isOpen} onClose={closeModal} isCentered>
         <ModalOverlay />

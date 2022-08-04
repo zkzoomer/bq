@@ -1,9 +1,18 @@
 /* global BigInt */
 import { useEffect, useState } from "react"
+import { useWeb3React } from '@web3-react/core';
+import { Contract } from "@ethersproject/contracts";
+import { parseEther }from "@ethersproject/units"
+import { useSelector } from "react-redux"
 import { NavLink } from "react-router-dom"
 import styled from "styled-components"
+import 'bootstrap/dist/css/bootstrap.css';
+import Spinner from 'react-bootstrap/Spinner';
+
 import { SubmitButton } from "../../components/Button"
 import { isValidAddress } from "../../hooks/utils"
+import { DEPLOYED_CONTRACTS } from "../../constants/chains";
+import { MAX_UINT32, ZERO_ADDRESS } from "../../constants/values";
 
 const SectionTitle = styled.div`
     font-size: 1.7rem;
@@ -123,6 +132,9 @@ const Buffer = styled.div`
 `
 
 const ButtonWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding-bottom: 20px;
 `
 
@@ -137,30 +149,35 @@ const ButtonWrapper = styled.div`
 // prize
 
 
-export default function SubmitCredential () {
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [submission, setSubmission] = useState({
-        credentialName: {value: "", error: ""},
-        testerURI: {value: "", error: ""},
-        solutionHash: {value: "", error: ""},
-        neededPass: {value: "", error: ""},
-        credentialLimit: {value: "", error: ""},
-        timeLimit: {value: "", error: ""},
-        prize: {value: "", error: ""},
+export default function SubmitCredential ({ submission, setSubmission, setProgressBarState }) {
+    const correctChain = useSelector(state => state.chain.correctChain);
+    const [buttonState, setButtonState] = useState({
+        enabled: false,
+        awaiting: false
     })
+    
+    const {
+        library,
+        chainId,
+        account,
+        activate,
+        deactivate,
+        active,
+        error
+    } = useWeb3React();
 
     const inputs = [
         { name: 'credentialName', placeholder: "Name your credential", label: 'Credential name' },
         { name: 'testerURI', placeholder: "Upload your test to IPFS and link it here", label: (<><InlineNavLink to='/help'>Supported markdown</InlineNavLink> tester URI</>) },
         { name: 'solutionHash', placeholder: "Solution hash of your multiple choice test", label: 'Answers tree root'},
-        { name: 'neededPass', placeholder: "Leave empty if not needed", label: 'NFT pass required to solve' },
+        { name: 'requiredPass', placeholder: "Leave empty if not needed", label: 'NFT pass required to solve' },
         { name: 'timeLimit', placeholder: "Leave empty for unlimited", label: 'Test deadline' },
     ]
 
     //returns an error string, empty if validated
     const validate = ({name, value}) => {
         // TODO: actually check if the smart contract supports `balanceOf`
-        if (name === 'neededPass') {
+        if (name === 'requiredPass') {
             return (!isValidAddress(value) && !!value) ? 'Not a valid contract address' : ''
         } 
 
@@ -197,23 +214,61 @@ export default function SubmitCredential () {
     }
 
     useEffect(() => {
-        let _isEnabled = true
+        let _enabled = true
         for (const [key, value] of Object.entries(submission)) {
             // what is the value of value: value.value ? 
-            if (validate({name: key, value: value.value})) {  // current entries must have no errors
-                _isEnabled = false
-            }
-            if ( ['credentialName', 'testerURI', 'solutionHash'].includes(key) && !value.value ) {  // and necessary ones must be defined
-                _isEnabled = false
-                console.log('empty entries')
+            if (
+                validate({name: key, value: value.value}) // current entries must have no errors
+                ||
+                (['credentialName', 'testerURI', 'solutionHash'].includes(key) && !value.value )  // and necessary ones must be defined
+                ||
+                !correctChain  // must be on the right chain
+            ) {  
+                _enabled = false
             }
         }
-        setIsEnabled(_isEnabled)
-    }, [submission])
+        setButtonState( prevState => ({
+            ...prevState,
+            enabled: _enabled
+        }))
+        setProgressBarState( prevState => ({
+            ...prevState,
+            completed: [
+                prevState.completed[0] || _enabled, 
+                _enabled
+            ]
+        }))
+    }, [submission, correctChain])
 
     // submits the tx onto the blockchain
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+        setButtonState( prevState => ({
+            ...prevState,
+            awaiting: true
+        }))
 
+        const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
+        const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
+
+        // TODO: handle tx via a promise, show modal for success / failure
+        try {
+            await testerCreator.createTester(
+                submission.testerURI.value,
+                submission.solutionHash.value,
+                submission.timeLimit.value || MAX_UINT32,
+                submission.credentialLimit.value || MAX_UINT32,
+                submission.requiredPass.value || ZERO_ADDRESS,
+                submission.credentialName.value,
+                { value: parseEther(submission.prize.value || '0') }
+            )
+        } catch (err) {
+            console.log(err)
+        }
+
+        setButtonState( prevState => ({
+            ...prevState,
+            awaiting: false
+        }))
     }
 
     const handleChange = event => {
@@ -234,7 +289,7 @@ export default function SubmitCredential () {
         }
     }
 
-    const inputItems = inputs.map(( item, index) => {
+    const inputItems = inputs.map(( item, index ) => {
         return(
             <InputWrapper key={item.name}>
                 <InputName>{item.label}</InputName>
@@ -294,8 +349,17 @@ export default function SubmitCredential () {
                     </PrizeInputWrapper>
                 </SpecialInputRow>
                 <ButtonWrapper>
-                    <SubmitButton disabled={!isEnabled} isEnabled={isEnabled} onClick={handleSubmit}>
-                        Create your credential
+                    <SubmitButton 
+                        disabled={!buttonState.enabled || buttonState.awaiting} 
+                        isEnabled={buttonState.enabled}
+                        onClick={handleSubmit}
+                    >
+                        {
+                            buttonState.awaiting ? 
+                                <Spinner animation="border" size="sm" />
+                            :
+                                "Create your credential"
+                        }
                     </SubmitButton>
                 </ButtonWrapper>
             </SubmitBox>

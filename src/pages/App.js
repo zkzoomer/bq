@@ -28,10 +28,10 @@ const BodyWrapper = styled.div`
   z-index: 1;
 
   @media (max-width: ${theme.breakpoint}px) {
-    padding: 2rem 8px 16px 8px;
+    padding: 2rem 16px 16px 16px;
   }
 `
-
+// TODO: fix Page Not Found on netlify support guide, when entering a url directly like blockqualified.netlify.app/create
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch()
