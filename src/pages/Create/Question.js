@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react"
 import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'https://esm.sh/remark-gfm@3'
+import remarkGfm from 'remark-gfm'
 import styled from "styled-components"
 import { FaTimes, FaCode, FaPlus } from 'react-icons/fa'
 import { ViewIcon } from '@chakra-ui/icons'

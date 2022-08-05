@@ -4,7 +4,7 @@ import styled from "styled-components"
 import ProgressBar from "./ProgressBar"
 import PublishQuestions from "./PublishQuestions"
 import SubmitCredential from "./SubmitCredential"
-import { MAX_QUESTIONS, NULL_ANSWERS_DICT, NULL_ANSWERS_FIRST_EMPTY_DICT } from "../../constants/values"
+import { MAX_QUESTIONS } from "../../constants/values"
 import { getNullAnswersDict, getNullAnswersFirstEmptyDict } from "./helpers"
 
 const CreateWrapper = styled.div`

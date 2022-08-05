@@ -102,7 +102,7 @@ export default function ErrorModal ({ errorMessage, closeModal }) {
         e => {
             if ( e.key === 'Escape' && showModal() ) {
                 closeModal();
-                }
+            }
         },
         [showModal()]
     );
