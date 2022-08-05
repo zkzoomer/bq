@@ -69,14 +69,19 @@ export function Help () {
                     markdown format. 
                     <br /><br />
                     This special formatting allows us to easily embed your questions into our frontend, while still giving you great 
-                    freedom to create and format your own credentials. Users can use the Block Qualified frontend to attempt to solve 
-                    your multiple choice tests with the easiness that our website provides.
+                    freedom to create and format your own credentials. Users will then be able to easily use the Block Qualified frontend to attempt to gain your 
+                    credentials
                     <br /><br />
-                    The supported markdown format requires you define each question and answer by adding two leading strings:
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_QUESTION_START&lt;br /&gt;</InlineQuote>, placed at the start of each question
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_ANSWER_START&lt;br /&gt;</InlineQuote>, placed at the start of each answer
+                    The supported markdown format requires you start your multiple choice test by defining its title and description. You must specify these by 
+                    preceding them with a specific string, with no added space:
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>BLOCK_QUALIFIED_TITLE:</InlineQuote>, placed right before your title.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>BLOCK_QUALIFIED_DESCRIPTION:</InlineQuote>, placed right before your description.
+                    <br />
+                    After defining the test, you need to define each question and answer by adding two leading strings:
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_QUESTION_START&lt;br /&gt;</InlineQuote>, placed at the start of each question.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_ANSWER_START&lt;br /&gt;</InlineQuote>, placed at the start of each answer.
                     <br /><br />
-                    Simply add these two special strings where needed and our frontend will render your multiple choice test and give users the
+                    Simply add these special strings where needed and our frontend will do the rest, rendering your multiple choice test and giving users the
                     ability to solve it natively.
                     <br /><br />
                     Or, you can just use our frontend to generate your credentials. Multiple choice tests created using the Block Qualified frontend 

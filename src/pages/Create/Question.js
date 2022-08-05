@@ -41,34 +41,6 @@ const TitleText = styled.div`
     text-justify: inter-word;
 `
 
-const QuestionInputBox = styled.textarea`
-    width: 100%;
-    height: 150px;
-    border-radius: 5px;
-    padding: 3px 0 3px 10px;
-    margin: 4px 0px 4px 0px;
-    box-shadow: 2px 2px 2px 1px var(--main-text);
-    border: 1px solid var(--main-text);
-    display: block;
-    text-align: left;
-    align-items: start;
-    overflow: hidden;
-    resize: none;
-
-    transition: all 0.1s ease-in-out;
-
-    ::placeholder {
-        font-family: 'Inter ExtraLightItalic';
-    }
-
-    &:focus {
-        outline: 0;
-        border: 1px solid var(--alt-text);
-        box-shadow: 0 0 0 white;
-        margin: 6px 0px 2px 0px;
-    }
-`
-
 const TextareaBox = styled.textarea`
     width: 100%;
     height: 50px;

@@ -22,6 +22,7 @@ import {
     getNullAnswersFirstEmptyDict, 
     shiftKeysInAnswersDict 
 } from "./helpers"
+import TitleAndDescription from "./TitleAndDescription"
 
 const PublishWrapper = styled.div`
     width:  100%;
@@ -85,13 +86,17 @@ const Pin = styled(PinAngle)`
     height: 55%;
 `
 
-const noErrors = []
+const noQuestionErrors = []
 for (var i = 1; i <= MAX_QUESTIONS; i++) {
-    noErrors.push(false)
+    noQuestionErrors.push(false)
+}
+const noErrors = {
+    titleAndDescription: false,
+    questions: noQuestionErrors
 }
 
 export default function PublishQuestions ({ test, setTest, correctAnswers, setCorrectAnswers, submission, setSubmission, advanceSection }) {
-
+    
     const [errors, setErrors] = useState(noErrors);
     const [awaiting, setAwaiting] = useState(false);
 
@@ -106,10 +111,30 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
     const handlePinClick = () => {
         setAwaiting(true)
 
-        // 1 - check if all the questions are defined
+        // 1 - check if title and description are defined
+        if (test.title === "" || test.description === "") {
+            setErrors( prevState => ({
+                ...prevState,
+                titleAndDescription: true
+            }))
+            dispatch(setError(['Title and description not defined', 'Make sure your multiple choice test includes both a title and description']))
+            dispatch(setModal('error'))
+            setAwaiting(false)
+            return
+        } else {
+            setErrors( prevState => ({
+                ...prevState,
+                titleAndDescription: false
+            }))
+        }
+
+        // 2 - check if all the questions are defined
         let allQuestionsDefinedAndAnswered = true;
-        const _errors = [...noErrors];
+        const _errors = [...noQuestionErrors];
         Object.entries(test).map(([ key, value ]) => {
+            if (key === 'title' || key === 'description') {
+                return null
+            }
             if (value.Q === "") {
                 allQuestionsDefinedAndAnswered = false
                 _errors[parseInt(key.substring(1)) - 1] = true
@@ -124,14 +149,17 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             })
         })
         if ( !allQuestionsDefinedAndAnswered ) {
-            setErrors(_errors)
+            setErrors( prevState => ({
+                ...prevState,
+                questions: _errors
+            }))
             dispatch(setError(['Some questions are not defined', 'Make sure all questions and answers have their content defined']))
             dispatch(setModal('error'))
             setAwaiting(false)
             return
         }
 
-        // 2 - check if correctAnswer is defined for all defined questions
+        // 3 - check if correctAnswer is defined for all defined questions
         const nQuestions = getNumberOfQuestions(test)
         for ( var i = 0; i < nQuestions; i++) {
             if (correctAnswers[i] === 0) {
@@ -140,7 +168,10 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             }
         }
         if ( !allQuestionsDefinedAndAnswered ) {
-            setErrors(_errors)
+            setErrors( prevState => ({
+                ...prevState,
+                questions: _errors
+            }))
             dispatch(setError(['Some questions are not answered', 'Make sure you defined all the correct answers for your questions']))
             dispatch(setModal('error'))
             setAwaiting(false)
@@ -153,21 +184,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
 
         setAwaiting(false)
 
-        /*
-            1) check if all questions are defined: must have content on Q and all A defined -> if not, set error on those not defined, show error modal
-            setErrors( to those )
-            dispatch(setError(['Some questions are not defined', 'Make sure all questions and answers are defined']))
-            dispatch(setModal('error'))
-            setAwaiting(false)
-            return
-
-            2) check if correctAnswer is defined for all defined questions -> if not, set error on those not defined, show error modal
-            setErrors( to those )
-            dispatch(setError(['Some questions are not answered', 'Make sure all the correct answers for your questions are defined']))
-            dispatch(setModal('error'))
-            setAwaiting(false)
-            return
-            
+        /*  
             --> both checks clear: IPFS stage
             1) transform raw contents into supported markdown, defined as: 
             questions start with: \nBLOCK_QUALIFIED_QUESTION_START\n
@@ -197,9 +214,9 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
     }
 
     const removeQuestion = (keyToRemove) => {
+        const toRemove = parseInt(keyToRemove.substring(1))
         setTest( prevState => {
             const _state = {...prevState}
-            const toRemove = parseInt(keyToRemove.substring(1))
             for (var i = toRemove; i < MAX_QUESTIONS; i++) {
                 _state['Q' + i] = {
                     Q: _state['Q' + (i + 1)].Q,
@@ -208,6 +225,19 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             }
             _state['Q' + MAX_QUESTIONS] = { Q: null, A: getNullAnswersDict('Q' + MAX_QUESTIONS) }
             return _state
+        })
+        // TODO: shift errors as well
+        const index = toRemove - 1
+        setErrors( prevState => {
+            const _questionsErrors = [...prevState.questions]
+            for (var i = index; i < MAX_QUESTIONS - 1; i++) {
+                _questionsErrors[i] = _questionsErrors[i + 1]
+            }
+            _questionsErrors[MAX_QUESTIONS - 1] = false;
+            return {
+                ...prevState,
+                questions: _questionsErrors
+            }
         })
     }
 
@@ -221,7 +251,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
         })
     }
 
-    // TODO: fix and change the correctAnswer w
     const removeAnswer = (questionKey, keyToRemove) => {
         // shifting answer boxes
         const toRemove = parseInt(keyToRemove.split('A')[1])
@@ -287,6 +316,9 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
     }
 
     const questionBoxes = Object.entries(test).map(( [key, value] ) => {
+        if (key === 'title' || key === 'description') {
+            return null
+        }
         return(
             value.Q === null ?
                 null
@@ -303,7 +335,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                     setAnswerText={(answerKey, answerText) => setAnswerText(key, answerKey, answerText)}
                     isRemovable={test.Q2.Q !== null}
                     removeQuestion={() => { removeQuestion(key) }}
-                    hasError={errors[parseInt(key.substring(1)) - 1]}
+                    hasError={errors.questions[parseInt(key.substring(1)) - 1]}
                 />
         )
     })
@@ -320,6 +352,11 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                 <InlineNavLink to="/help"> supported markdown file, </InlineNavLink>
                 you can <InlineButton onClick={advanceSection}>skip this step.</InlineButton>
             </SectionSubTitle>
+            <TitleAndDescription 
+                test={test}
+                setTest={setTest}
+                hasError={errors.titleAndDescription}
+            />
             <QuestionsWrapper key='questionsWrapper'>
                 {questionBoxes}
                 {

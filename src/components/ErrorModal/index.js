@@ -77,6 +77,7 @@ const CloseModalButton = styled(MdClose)`
     }
 `;
 
+// TODO: modal not having a smooth transition down
 export default function ErrorModal ({ errorMessage, closeModal }) {
     const modalRef = useRef();
 
@@ -86,10 +87,10 @@ export default function ErrorModal ({ errorMessage, closeModal }) {
 
     const animation = useSpring({
         config: {
-        duration: 250
+            duration: 2500
         },
-        opacity: showModal() !== 0 ? 1 : 0,
-        transform: showModal()  !== 0 ? `translateY(0%)` : `translateY(-100%)`
+        opacity: !!showModal() ? 1 : 0,
+        transform: !!showModal() ? `translateY(0%)` : `translateY(-100%)`
     });
 
     const backgroundCloseModal = e => {

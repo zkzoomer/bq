@@ -61,6 +61,7 @@ export const getSolutionHash = (_correctAnswers) => {
     return ''
 }
 
+// generates a text string that contains the markdown file to be uploaded to ipfs
 export const generateMarkdownFile = (_test) => {
 
 }

@@ -21,7 +21,10 @@ const SectionWrapper = styled.div`
     justify-content: center;
 `
 
-const initialTest = {}
+const initialTest = {
+    title: "",
+    description: "",
+}
 const initialCorrectAnswers = []
 for (var i = 1; i <= MAX_QUESTIONS; i++) {
     initialTest['Q' + i] = {
