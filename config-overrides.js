@@ -1,5 +1,9 @@
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+
 module.exports = function override (config, env) {
     console.log('override')
+    config.resolve.plugins = config.resolve.plugins.filter(plugin => !(plugin instanceof ModuleScopePlugin));
+
     let loaders = config.resolve
     loaders.fallback = {
         "fs": false,
