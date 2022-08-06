@@ -6,7 +6,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var bigInt = require('big-integer');
-var crypto = require('crypto');
+/* var crypto = require('crypto'); */
 var wasmcurves = require('wasmcurves');
 var os = require('os');
 var Worker = require('web-worker');
@@ -15,7 +15,7 @@ var wasmbuilder = require('wasmbuilder');
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var bigInt__default = /*#__PURE__*/_interopDefaultLegacy(bigInt);
-var crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
+/* var crypto__default = _interopDefaultLegacy(crypto); */
 var os__default = /*#__PURE__*/_interopDefaultLegacy(os);
 var Worker__default = /*#__PURE__*/_interopDefaultLegacy(Worker);
 
@@ -1611,9 +1611,9 @@ function getRandomBytes(n) {
             }
         } */
     }
-    else { // NodeJS
+    /* else { // NodeJS
         crypto__default["default"].randomFillSync(array);
-    }
+    } */
     return array;
 }
 
