@@ -102,12 +102,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
 
     const dispatch = useDispatch()
 
-    /* useEffect(() => {
-        // new answers, we define a new solution hash
-        const hash = getSolutionHash(correctAnswers)
-        setSolutionHash(hash)
-    }, [correctAnswers]) */
-
     const handlePinClick = () => {
         setAwaiting(true)
 
@@ -180,7 +174,22 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
 
         setErrors(noErrors)
 
+        const markdownFile = generateMarkdownFile(test)
+
         console.log('on ipfs stage')
+
+        const ipfsPin = ''
+        const solutionHash = getSolutionHash(correctAnswers)
+        console.log(solutionHash)
+
+        /*
+        setSubmission( prevState => ({
+            ...prevState,
+            'testerURI': ipfsPin,
+            'solutionHash': solutionHash,
+            '_pinnedTester': ipfsPin,
+        }))
+        */
 
         setAwaiting(false)
 

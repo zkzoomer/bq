@@ -1,4 +1,6 @@
+import { SUPPORTED_MARKDOWN_STRING_LITERALS } from "../../constants/supportedMarkdown"
 import { MAX_QUESTIONS, MAX_ANSWERS } from "../../constants/values"
+import { rootFromLeafArray } from "../../proof/poseidonMerkle"
 
 export const getNullAnswersDict = (key) => {
     var nullAnswersDict = {}
@@ -58,10 +60,31 @@ export const answerKeyToNumber = (answerKey) => {
 }
 
 export const getSolutionHash = (_correctAnswers) => {
-    return ''
+    return rootFromLeafArray(_correctAnswers).toString()
 }
 
 // generates a text string that contains the markdown file to be uploaded to ipfs
 export const generateMarkdownFile = (_test) => {
-
+    let markdownFile = SUPPORTED_MARKDOWN_STRING_LITERALS.title
+    markdownFile += _test.title
+    markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.description
+    markdownFile += _test.description
+    // adding each question, only if defined
+    for (var i = 1; i <= MAX_QUESTIONS; i++) {
+        if ( _test['Q' + i].Q !== null ) {
+            markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.questionStart
+            markdownFile += _test['Q' + i].Q
+            for (var j = 1; j <= MAX_ANSWERS; j++) {
+                if ( _test['Q' + i].A['Q' + i + 'A' + j] !== null ) {
+                    markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.answerStart
+                    markdownFile += _test['Q' + i].A['Q' + i + 'A' + j]
+                } else {
+                    break
+                }
+            }
+        } else {
+            break;
+        }
+    }
+    return markdownFile
 }

@@ -1,6 +1,7 @@
 import styled from "styled-components"
 
 import { DEPLOYED_CONTRACTS_ON_EXPLORER } from "../../constants/chains"
+import { SUPPORTED_MARKDOWN_STRING_LITERALS } from "../../constants/supportedMarkdown"
 import { theme } from "../../theme"
 
 const HelpWrapper = styled.div`
@@ -74,12 +75,12 @@ export function Help () {
                     <br /><br />
                     The supported markdown format requires you start your multiple choice test by defining its title and description. You must specify these by 
                     preceding them with a specific string, with no added space:
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>BLOCK_QUALIFIED_TITLE:</InlineQuote>, placed right before your title.
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>BLOCK_QUALIFIED_DESCRIPTION:</InlineQuote>, placed right before your description.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>{SUPPORTED_MARKDOWN_STRING_LITERALS.title}</InlineQuote>, placed right before your title.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>{SUPPORTED_MARKDOWN_STRING_LITERALS.description}</InlineQuote>, placed right before your description.
                     <br />
                     After defining the test, you need to define each question and answer by adding two leading strings:
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_QUESTION_START&lt;br /&gt;</InlineQuote>, placed at the start of each question.
-                    <br />&emsp;&emsp;&emsp;— <InlineQuote>&lt;br /&gt;BLOCK_QUALIFIED_ANSWER_START&lt;br /&gt;</InlineQuote>, placed at the start of each answer.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>{SUPPORTED_MARKDOWN_STRING_LITERALS.questionStart}</InlineQuote>, placed at the start of each question.
+                    <br />&emsp;&emsp;&emsp;— <InlineQuote>{SUPPORTED_MARKDOWN_STRING_LITERALS.answerStart}</InlineQuote>, placed at the start of each answer.
                     <br /><br />
                     Simply add these special strings where needed and our frontend will do the rest, rendering your multiple choice test and giving users the
                     ability to solve it natively.

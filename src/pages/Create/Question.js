@@ -26,6 +26,7 @@ const QuestionBox = styled.div`
 `
 
 const TopRow = styled.div`
+    height: 72px;
     display: grid;
     grid-template-columns: auto auto; 
     justify-content: space-between;  

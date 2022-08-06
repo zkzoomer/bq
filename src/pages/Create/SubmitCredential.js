@@ -13,6 +13,7 @@ import { SubmitButton } from "../../components/Button"
 import { isValidAddress } from "../../hooks/utils"
 import { DEPLOYED_CONTRACTS } from "../../constants/chains";
 import { MAX_UINT32, ZERO_ADDRESS } from "../../constants/values";
+import { theme } from "../../theme";
 
 const SectionTitle = styled.div`
     font-size: 1.7rem;
@@ -28,7 +29,7 @@ const SubmitBox = styled.div`
     justify-content: center; 
 
     width:  25%;
-    min-width: 380px;
+    min-width: 450px;
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
 
@@ -36,6 +37,10 @@ const SubmitBox = styled.div`
     box-shadow: 2px 2px 2px 1px var(--main-text);
     border: 1px solid var(--main-text);
     background-color: transparent;
+
+    @media (max-width: ${theme.breakpoint}px) {
+        min-width: 380px;
+    }
 `
 
 const SubmitWrapper = styled.div`

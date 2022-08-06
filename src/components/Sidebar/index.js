@@ -147,7 +147,7 @@ const IconLink = styled.a`
     }
 `
 
-
+// TODO: make icons stay at rotated position
 export default function Sidebar() {
     const isOpen = useSelector(state => state.sidebar.isOpen);
     const dispatch = useDispatch();

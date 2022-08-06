@@ -64,6 +64,7 @@ const RowTitle = styled.div`
 
 const TextareaBox = styled.textarea`
     width: 100%;
+    min-height: 80px;
     border-radius: 5px;
     padding: 3px 0 3px 10px;
     margin: 2px 0px 2px 0px;
