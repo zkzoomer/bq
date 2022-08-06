@@ -6775,7 +6775,7 @@ async function getCurveFromName(name, singleThread, plugins) {
 const Scalar=_Scalar;
 const utils = _utils;
 
-exports.BigBuffer = BigBuffer;
+/* exports.BigBuffer = BigBuffer;
 exports.ChaCha = ChaCha;
 exports.EC = EC;
 exports.F1Field = F1Field;
@@ -6789,4 +6789,6 @@ exports.buildBn128 = buildBn128;
 exports.getCurveFromName = getCurveFromName;
 exports.getCurveFromQ = getCurveFromQ;
 exports.getCurveFromR = getCurveFromR;
-exports.utils = utils;
+exports.utils = utils; */
+
+export { Scalar, F1Field, unstringifyBigInts }
