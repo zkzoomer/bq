@@ -20,7 +20,8 @@ import {
     getNumberOfAnswers, 
     getNullAnswersDict, 
     getNullAnswersFirstEmptyDict, 
-    shiftKeysInAnswersDict 
+    shiftKeysInAnswersDict, 
+    makeStorageClient
 } from "./helpers"
 import TitleAndDescription from "./TitleAndDescription"
 
@@ -98,12 +99,12 @@ const noErrors = {
 export default function PublishQuestions ({ test, setTest, correctAnswers, setCorrectAnswers, submission, setSubmission, advanceSection }) {
     
     const [errors, setErrors] = useState(noErrors);
-    const [awaiting, setAwaiting] = useState(false);
+    const [awaiting, setAwaiting] = useState("");
 
     const dispatch = useDispatch()
 
-    const handlePinClick = () => {
-        setAwaiting(true)
+    const handlePinClick = async () => {
+        setAwaiting("Generating file")
 
         // 1 - check if title and description are defined
         if (test.title === "" || test.description === "") {
@@ -113,7 +114,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             }))
             dispatch(setError(['Title and description not defined', 'Make sure your multiple choice test includes both a title and description']))
             dispatch(setModal('error'))
-            setAwaiting(false)
+            setAwaiting("")
             return
         } else {
             setErrors( prevState => ({
@@ -149,7 +150,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             }))
             dispatch(setError(['Some questions are not defined', 'Make sure all questions and answers have their content defined']))
             dispatch(setModal('error'))
-            setAwaiting(false)
+            setAwaiting("")
             return
         }
 
@@ -168,7 +169,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             }))
             dispatch(setError(['Some questions are not answered', 'Make sure you defined all the correct answers for your questions']))
             dispatch(setModal('error'))
-            setAwaiting(false)
+            setAwaiting("")
             return
         }
 
@@ -176,22 +177,34 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
 
         const markdownFile = generateMarkdownFile(test)
 
-        console.log('on ipfs stage')
+        const onRootCidReady = cid => {
+            setAwaiting('Uploading...')
+        }
+        
+        // when each chunk is stored, update the percentage complete and display
+        const totalSize = markdownFile.size
+        let uploaded = 0
+        
+        const onStoredChunk = size => {
+            uploaded += size
+            const pct = 100 * (uploaded / totalSize)
+            setAwaiting(`Uploading... ${pct.toFixed(2)}%`)
+        }
 
-        const ipfsPin = ''
+        const client = makeStorageClient()
+        const ipfsPin = await client.put([markdownFile], { onRootCidReady, onStoredChunk, wrapWithDirectory: false })
+        const testerURI = 'https://' + ipfsPin + '.ipfs.dweb.link/'
         const solutionHash = getSolutionHash(correctAnswers)
-        console.log(solutionHash)
 
-        /*
+        
         setSubmission( prevState => ({
             ...prevState,
-            'testerURI': ipfsPin,
-            'solutionHash': solutionHash,
-            '_pinnedTester': ipfsPin,
+            'testerURI': {value: testerURI, error: ""},
+            'solutionHash': {value: solutionHash, error: ""},
+            '_pinnedTester': testerURI,
         }))
-        */
-
-        setAwaiting(false)
+       
+        setAwaiting("")
 
         /*  
             --> both checks clear: IPFS stage
@@ -388,10 +401,13 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                             <AdvanceSectionButton onClick={advanceSection}>Advance section&nbsp;&nbsp;<FaArrowRight /></AdvanceSectionButton>
                         </>
                     : 
-                        <UploadButton key='ipfs' disabled={awaiting} onClick={handlePinClick}>
+                        <UploadButton key='ipfs' disabled={!!awaiting} onClick={handlePinClick}>
                             {
-                                awaiting ? 
-                                    <Spinner animation="border" size="m" />
+                                !!awaiting ? 
+                                    <>  
+                                        {awaiting}&nbsp;&nbsp;
+                                        <Spinner animation="border" size="sm" />
+                                    </>
                                 :
                                     <><Pin />&nbsp;&nbsp;Pin to IPFS</>
                             }

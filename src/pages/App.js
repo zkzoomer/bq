@@ -18,6 +18,7 @@ import { NotFound } from './NotFound';
 import Sidebar from '../components/Sidebar';
 import { Footer } from '../components/Footer';
 
+
 const BodyWrapper = styled.div`
   background-color: var(--main-background);
   display: flex;

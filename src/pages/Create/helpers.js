@@ -1,3 +1,5 @@
+import { Web3Storage } from 'web3.storage'
+
 import { SUPPORTED_MARKDOWN_STRING_LITERALS } from "../../constants/supportedMarkdown"
 import { MAX_QUESTIONS, MAX_ANSWERS } from "../../constants/values"
 import { rootFromLeafArray } from "../../proof/poseidonMerkle"
@@ -65,19 +67,19 @@ export const getSolutionHash = (_correctAnswers) => {
 
 // generates a text string that contains the markdown file to be uploaded to ipfs
 export const generateMarkdownFile = (_test) => {
-    let markdownFile = SUPPORTED_MARKDOWN_STRING_LITERALS.title
-    markdownFile += _test.title
-    markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.description
-    markdownFile += _test.description
+    let _markdownFile = SUPPORTED_MARKDOWN_STRING_LITERALS.title
+    _markdownFile += _test.title
+    _markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.description
+    _markdownFile += _test.description
     // adding each question, only if defined
     for (var i = 1; i <= MAX_QUESTIONS; i++) {
         if ( _test['Q' + i].Q !== null ) {
-            markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.questionStart
-            markdownFile += _test['Q' + i].Q
+            _markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.questionStart
+            _markdownFile += _test['Q' + i].Q
             for (var j = 1; j <= MAX_ANSWERS; j++) {
                 if ( _test['Q' + i].A['Q' + i + 'A' + j] !== null ) {
-                    markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.answerStart
-                    markdownFile += _test['Q' + i].A['Q' + i + 'A' + j]
+                    _markdownFile += SUPPORTED_MARKDOWN_STRING_LITERALS.answerStart
+                    _markdownFile += _test['Q' + i].A['Q' + i + 'A' + j]
                 } else {
                     break
                 }
@@ -86,5 +88,18 @@ export const generateMarkdownFile = (_test) => {
             break;
         }
     }
+
+    const markdownFile = new File([_markdownFile], 'block-qualified-tester.md', {
+        type: "text/plain",
+    });
     return markdownFile
 }
+
+function getAccessToken () {
+    return process.env.REACT_APP_WEB3STORAGE_TOKEN
+}
+
+export function makeStorageClient () {
+    return new Web3Storage({ token: getAccessToken() })
+}
+

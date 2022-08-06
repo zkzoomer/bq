@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styled from "styled-components"
 
 import ProgressBar from "./ProgressBar"
@@ -54,7 +54,7 @@ export function Create () {
     })
 
     // Add one question on first load if there are none defined
-    useState(() => {
+    useEffect(() => {
         if (test.Q1.Q === null) {
             setTest( prevState => ({
                 ...prevState,
@@ -62,6 +62,20 @@ export function Create () {
             }))
         }
     }, [])
+
+    useEffect(() => {
+        let _completed = false;
+        if (!!submission.testerURI.value && !!submission.solutionHash.value) {
+            _completed = true
+        }
+        setProgressBarState( prevState => ({
+            ...prevState,
+            completed: [
+                _completed,
+                ...prevState.completed.slice(1, 2)
+            ]
+        }))
+    }, [submission])
 
     return (
         <CreateWrapper>
