@@ -14,6 +14,8 @@ import { setModal } from '../../state/modal/reducer';
 import { setError } from '../../state/error/reducer';
 import { getNumberOfQuestions } from "./helpers";
 
+import { _groth16FullProve } from "../../proof/snarkjs";
+
 const QuestionsWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -33,7 +35,7 @@ const zeroAnswers = []
 const noQuestionErrors = []
 for (var i = 1; i <= MAX_QUESTIONS; i++) {
     noQuestionErrors.push(false)
-    zeroAnswers.push(0)
+    zeroAnswers.push(1)
 }
 
 export default function SolveTester ({ tokenStats, tester }) {
@@ -60,7 +62,7 @@ export default function SolveTester ({ tokenStats, tester }) {
         }))
     }, [correctChain])
 
-    const handleClick = () => {
+    const handleClick = async () => {
         setButtonState( prevState => ({
             ...prevState,
             awaiting: true
@@ -85,6 +87,19 @@ export default function SolveTester ({ tokenStats, tester }) {
             }))
             return
         }
+
+        // all answers set, make proof
+        const { proof, publicSignals } = await _groth16FullProve(
+            {
+                "answers": answers,
+                "salt": Math.floor(Math.random() * 1_000_000_000_000_000).toString()
+            },
+            require("../../proof/verify_answers.wasm"),
+            require("../../proof/verify_answers_final.zkey")
+        )
+
+        console.log(proof)
+        console.log(publicSignals)
 
         const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
         const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())

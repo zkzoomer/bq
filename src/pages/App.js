@@ -19,7 +19,6 @@ import Sidebar from '../components/Sidebar';
 import { Footer } from '../components/Footer';
 import { Solve } from './Solve';
 
-
 const BodyWrapper = styled.div`
   background-color: var(--main-background);
   display: flex;
