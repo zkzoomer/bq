@@ -126,12 +126,20 @@ function square$2(a) {
     return BigInt(a) * BigInt(a);
 }
 
+function simplePow(x, y) {
+	let calced = 1n;
+	for (let i = 0, e = y; i < e; i++) {
+		calced *= x
+	}
+	return calced;
+}
+
 function pow$2(a, b) {
-    return BigInt(a) ** BigInt(b);
+    return simplePow(BigInt(a), BigInt(b));
 }
 
 function exp$3(a, b) {
-    return BigInt(a) ** BigInt(b);
+    return simplePow(BigInt(a), BigInt(b));
 }
 
 function abs$2(a) {
@@ -22580,3 +22588,6 @@ export async function _groth16FullProve(_input, wasmFile, zkeyFileName, logger) 
     await wtnsCalculate(input, wasmFile, wtns);
     return await groth16Prove(zkeyFileName, wtns, logger);
 }
+
+
+// TODO: clean this up BIG TIME
