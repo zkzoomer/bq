@@ -143,17 +143,6 @@ const ButtonWrapper = styled.div`
     padding-bottom: 20px;
 `
 
-
-
-// credential name
-// tester IPFS link - URI
-// solution hash
-// time limit - for now just raw integer
-// credential limit
-// needed pass
-// prize
-
-
 export default function SubmitCredential ({ submission, setSubmission, setProgressBarState }) {
     const correctChain = useSelector(state => state.chain.correctChain);
     const [buttonState, setButtonState] = useState({
@@ -164,11 +153,6 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
     const {
         library,
         chainId,
-        account,
-        activate,
-        deactivate,
-        active,
-        error
     } = useWeb3React();
 
     const inputs = [

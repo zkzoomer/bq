@@ -205,19 +205,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
         }))
        
         setAwaiting("")
-
-        /*  
-            --> both checks clear: IPFS stage
-            1) transform raw contents into supported markdown, defined as: 
-            questions start with: \nBLOCK_QUALIFIED_QUESTION_START\n
-            answers start with: \nBLOCK_QUALIFIED_ANSWER_START\n
-                * just starting, nothing defining the end of them but the next start
-            2) save this file as tester.md
-            3) pin to IPFS, return the content link
-            4) generate the solution hash, setting 0 for all non defined questions (those needed to reach MAX_QUESTIONS)
-            4) setSubmission for submission._pinnedTester, testerURI = pinned result; solutionHash = obtained hash
-            5) setAwaiting(false)
-        */
     }
 
     const handleCopyClick = () => {
@@ -389,9 +376,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                 }
             </QuestionsWrapper>
             <ButtonsWrapper>
-                {/* <UploadButton key='hash' disabled={!correctAnswers.length} isEnabled={!!correctAnswers.length} onClick={handleCopyClick}>
-                    <CopyIcon />&nbsp;&nbsp;Copy solution hash
-                </UploadButton> */}
                 {
                     submission._pinnedTester ? 
                         <>
@@ -415,18 +399,6 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                 }
                 
             </ButtonsWrapper>
-            {/* 
-            question wrapper as many as defined - inside it 
-                toggle preview (global)
-                remove question
-                default inputbox for the question text
-                one default inputbox for as many answer text as defined
-                add answer (+) button up to the max supported
-            add question button (+) up to the max supported
-            very bottom: two buttons:
-                - copy solution hash
-                - pin to IPFS // when pinned: copy IPFS link
-             */}
         </PublishWrapper>
     )
 }

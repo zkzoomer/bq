@@ -202,13 +202,11 @@ export const AnswerButton = styled.button`
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
-    margin: 4px 0px 4px 0px;
-    margin: ${({isClicked}) => (isClicked ? `6px 0px 2px 0px` : `4px 0px 4px 0px`)};
+    margin: ${({isClicked}) => (isClicked ? `2px 0px 2px 0px` : `0px 0px 4px 0px`)};
     border: 1px solid var(--main-text);
     box-shadow: ${({isClicked}) => (isClicked ? `0 0 0 white` : `2px 2px 2px 1px var(--main-text)`)};
     background-color: ${({isClicked}) => (isClicked ? `var(--success)` : `transparent`)};
     color: var(--main-text);
-    /* color: ${({isClicked}) => (isClicked ? `var(--light-text)` : `var(--main-text)`)}; */
 
     @media (max-width: ${theme.breakpoint}px) {
         margin-right: 10px;
@@ -236,5 +234,30 @@ export const AdvanceSectionButton = styled.button`
         color: var(--main-text);
         box-shadow: 0 0 0 white;
         margin: 6px 10px 2px 10px;
+    }
+`
+
+export const SolveButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    
+    width: 220px;
+    height: 50px;
+    border-radius: 5px;
+    padding: 5px 15px 5px 15px;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+
+    margin: 4px 10px 4px 10px;
+    border: 1px solid var(--main-text);
+    cursor: ${({isEnabled}) => (isEnabled ? `pointer` : `default !important`)};
+    box-shadow: ${({isEnabled}) => (isEnabled ? `2px 2px 2px 1px var(--main-text)` : `0 0 0 white`)};
+    background-color: ${({isEnabled}) => (isEnabled ? `var(--success)` : `transparent`)};
+    color: ${({isEnabled}) => (isEnabled ? `var(--light-text)` : `var(--main-text)`)};
+
+    &:hover {
+        box-shadow: 0 0 0 white;
+        margin: ${({isEnabled}) => (isEnabled ? `6px 10px 2px 10px` : `4px 10px 4px 10px`)};
     }
 `

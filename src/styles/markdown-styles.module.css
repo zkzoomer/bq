@@ -3,11 +3,15 @@
 .reactMarkDown {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   white-space: pre-wrap;
-  text-align: justify;
-  text-justify: inter-word;
-  align-items: start;
-  justify-content: start;
+}
+
+.reactMarkDown p {
+  width: 100%;
+  text-align: justify !important;
+  text-justify: inter-word !important;
 }
 
 .reactMarkDown h1 {

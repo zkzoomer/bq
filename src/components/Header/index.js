@@ -121,13 +121,6 @@ const SidebarButton = styled.button`
     width: 34px;
 `
 
-const DividerLine = styled.hr`
-    height: 100%;
-    width: 90%;
-    border-top: 1px solid var(--divider);;
-`
-
-
 export default function Header ({ onOpen }) {
     const correctChain = useSelector(state => state.chain.correctChain);
     const sidebarIsOpen = useSelector(state => state.sidebar.isOpen);
@@ -176,13 +169,11 @@ export default function Header ({ onOpen }) {
     const switchNetwork = async () => {
         const network = ALL_SUPPORTED_CHAIN_IDS[0]
         try {
-            console.log('here')
           await library.provider.request({
             method: "wallet_switchEthereumChain",
             params: [{ chainId: toHex(80001) }]
           });
         } catch (switchError) {
-            console.log('here now')
           if (switchError.code === 4902) {
             try {
               await library.provider.request({

@@ -9,22 +9,18 @@ const FooterWrapper = styled.div`
     background-color: var(--main-background);
 `
 
-const DividerLine = styled.hr`
-    height: 100%;
-    width: 90%;
-    border-top: 1px solid var(--divider);
-`
-
 const FooterContents = styled.div`
+    width: 90%;
+    height: 100%;
+    border-top: 1px solid var(--divider);
     font-family: 'Inter ExtraLightItalic';
-    padding-bottom: 5px;
+    padding-top: 5px;
 `
 
 
 export function Footer () {
     return(
         <FooterWrapper>
-            <DividerLine />
             <FooterContents>
                 2022 | block qualified
             </FooterContents>

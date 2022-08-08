@@ -6,6 +6,9 @@ const ProfileWrapper = styled.div`
     height: 200vh;
 `
 
+// nothing else on url -> ask for connection, show connected account
+// addy provided -> validate, if not valid 404; if vailid show content
+
 export function Profile () {
     return (
         <ProfileWrapper>

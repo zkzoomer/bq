@@ -1,8 +1,6 @@
 // ADAPTED FROM: https://github.com/iden3/ffjavascript
 //
 
-'use strict';
-
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var bigInt = require('big-integer');
@@ -23,10 +21,10 @@ var Worker__default = /*#__PURE__*/_interopDefaultLegacy(Worker);
 const hexLen = [ 0, 1, 2, 2, 3, 3, 3, 3, 4 ,4 ,4 ,4 ,4 ,4 ,4 ,4];
 
 function fromString$2(s, radix) {
-    if ((!radix)||(radix==10)) {
+    if ((!radix)||(radix===10)) {
         return BigInt(s);
-    } else if (radix==16) {
-        if (s.slice(0,2) == "0x") {
+    } else if (radix===16) {
+        if (s.slice(0,2) === "0x") {
             return BigInt(s);
         } else {
             return BigInt("0x"+s);
@@ -70,7 +68,7 @@ const shl$2 = shiftLeft$2;
 const shr$2 = shiftRight$2;
 
 function isOdd$2(a) {
-    return (BigInt(a) & BigInt(1)) == BigInt(1);
+    return (BigInt(a) & BigInt(1)) === BigInt(1);
 }
 
 
@@ -173,7 +171,7 @@ function mod$2(a, b) {
 }
 
 function eq$2(a, b) {
-    return BigInt(a) == BigInt(b);
+    return BigInt(a) === BigInt(b);
 }
 
 function neq$2(a, b) {
@@ -262,8 +260,8 @@ var Scalar_native = /*#__PURE__*/Object.freeze({
 });
 
 function fromString$1(s, radix) {
-    if (typeof s == "string") {
-        if (s.slice(0,2) == "0x") {
+    if (typeof s === "string") {
+        if (s.slice(0,2) === "0x") {
             return bigInt__default["default"](s.slice(2), 16);
         } else {
             return bigInt__default["default"](s,radix);
@@ -752,10 +750,10 @@ class PolField {
 
 
     mul(a, b) {
-        if (a.length == 0) return [];
-        if (b.length == 0) return [];
-        if (a.length == 1) return this.mulScalar(b, a[0]);
-        if (b.length == 1) return this.mulScalar(a, b[0]);
+        if (a.length === 0) return [];
+        if (b.length === 0) return [];
+        if (a.length === 1) return this.mulScalar(b, a[0]);
+        if (b.length === 1) return this.mulScalar(a, b[0]);
 
         if (b.length > a.length) {
             [b, a] = [a, b];
@@ -835,14 +833,14 @@ class PolField {
 
     eval(p,x) {
         const F = this.F;
-        if (p.length == 0) return F.zero;
+        if (p.length === 0) return F.zero;
         const m = this._next2Power(p.length);
         const ep = this.extend(p, m);
 
         return _eval(ep, x, 0, 1, m);
 
         function _eval(p, x, offset, step, n) {
-            if (n==1) return p[offset];
+            if (n===1) return p[offset];
             const newX = F.square(x);
             const res= F.add(
                 _eval(p, newX, offset, step << 1, n >> 1),
@@ -940,7 +938,7 @@ class PolField {
     _fft(pall, bits, offset, step) {
 
         const n = 1 << bits;
-        if (n==1) {
+        if (n===1) {
             return [ pall[offset] ];
         }
 
@@ -961,14 +959,14 @@ class PolField {
     }
 
     extend(p, e) {
-        if (e == p.length) return p;
+        if (e === p.length) return p;
         const z = new Array(e-p.length).fill(this.F.zero);
 
         return p.concat(z);
     }
 
     reduce(p) {
-        if (p.length == 0) return p;
+        if (p.length === 0) return p;
         if (! this.F.eq(p[p.length-1], this.F.zero) ) return p;
         let i=p.length-1;
         while( i>0 && this.F.eq(p[i], this.F.zero) ) i--;
@@ -1120,7 +1118,7 @@ class PolField {
         }
 
         while (r>0) {
-            if (r & 1 == 1) {
+            if (r & 1 === 1) {
                 res = this.F.mul(res, this.w[nbits]);
             }
             r = r >> 1;
@@ -1175,9 +1173,9 @@ function log2$2( V )
 function __fft$1(PF, pall, bits, offset, step) {
 
     const n = 1 << bits;
-    if (n==1) {
+    if (n===1) {
         return [ pall[offset] ];
-    } else if (n==2) {
+    } else if (n===2) {
         return [
             PF.F.add(pall[offset], pall[offset + step]),
             PF.F.sub(pall[offset], pall[offset + step])];
@@ -1283,9 +1281,9 @@ function mulScalar(F, base, e) {
 
     const n = naf(e);
 
-    if (n[n.length-1] == 1) {
+    if (n[n.length-1] === 1) {
         res = base;
-    } else if (n[n.length-1] == -1) {
+    } else if (n[n.length-1] === -1) {
         res = F.neg(base);
     } else {
         throw new Error("invlaud NAF");

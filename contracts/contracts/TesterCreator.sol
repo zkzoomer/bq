@@ -147,8 +147,8 @@ contract TesterCreator is SolutionVerifier, ERC165Storage, IERC721, IERC721Metad
         }
 
         // Increase the number of testers available
-        uint256 _testerId = _nTesters + 1;
         _nTesters++;
+        uint256 _testerId = _nTesters;
 
         // Setting the given URI that holds all of the questions
         _tokenURIs[_testerId] = _testerURI;

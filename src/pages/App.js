@@ -17,6 +17,7 @@ import { Help } from './Help';
 import { NotFound } from './NotFound';
 import Sidebar from '../components/Sidebar';
 import { Footer } from '../components/Footer';
+import { Solve } from './Solve';
 
 
 const BodyWrapper = styled.div`
@@ -48,7 +49,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/create" element={<Create />} />
             <Route path="/browse" element={<Browse />} />
-            {/* TODO: add solver pages how to do it */}
+            <Route path="/solve/*" element={<Solve />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/help" element={<Help />} />
             <Route path="*" element={<NotFound />} />

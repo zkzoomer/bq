@@ -21,15 +21,15 @@ BLOCK_QUALIFIED_ANSWER_START: Testers cannot be transferred, but credentials can
   
 BLOCK_QUALIFIED_QUESTION_START: Alice is interested in hiring Bob for a blockchain developer position, but she wants to test his knowledge and experience first. To do this,she decides to create a Block Qualified Tester made up of 20 questions, with 6 possible answers each, with what she deems are the *minimum requirements* for the position. She decides to set a 24 hour limit on the test, and funds it with the sign in bonus for the position. The next morning, she is happy to see that Bod gained the credentials.  
 What is the chance that Bob randomly guessed it right?  
-BLOCK_QUALIFIED_ANSWER_START: about one in a million.  
-BLOCK_QUALIFIED_ANSWER_START: about one in a billion.  
-BLOCK_QUALIFIED_ANSWER_START: about one in a trillion.  
-BLOCK_QUALIFIED_ANSWER_START: about one in a quadrillion.  
+BLOCK_QUALIFIED_ANSWER_START: About one in a million.  
+BLOCK_QUALIFIED_ANSWER_START: About one in a billion.  
+BLOCK_QUALIFIED_ANSWER_START: About one in a trillion.  
+BLOCK_QUALIFIED_ANSWER_START: About one in a quadrillion.  
   
 BLOCK_QUALIFIED_QUESTION_START: After the two transactions that took place on the previous questionn, which of the following variables did ***NOT*** get stored inside the smart contracts?  
-BLOCK_QUALIFIED_ANSWER_START: the *solving hash*.  
-BLOCK_QUALIFIED_ANSWER_START: the *salt* used by Bob.  
-BLOCK_QUALIFIED_ANSWER_START: the *solution hash*.  
+BLOCK_QUALIFIED_ANSWER_START: The *solving hash*.  
+BLOCK_QUALIFIED_ANSWER_START: The *salt* that was used by Bob.  
+BLOCK_QUALIFIED_ANSWER_START: The *solution hash*.  
 BLOCK_QUALIFIED_ANSWER_START: Bob's address.  
 
 BLOCK_QUALIFIED_QUESTION_START: Which hash function is used by Block Qualified to generate Merkle trees and verify solutions?  
@@ -56,9 +56,13 @@ BLOCK_QUALIFIED_ANSWER_START: It guarantees private solving transactions.
 BLOCK_QUALIFIED_ANSWER_START: It makes two user's proofs for the same solution different.  
 BLOCK_QUALIFIED_ANSWER_START: None of the above.  
   
-BLOCK_QUALIFIED_QUESTION_START: In the following figure, which element is being represented by the letter C?  
+BLOCK_QUALIFIED_QUESTION_START: In the following figure, which element is being represented by the letter ****C***?  
 ![Figure 1](https://i.imgur.com/fgJ6pSy.png)  
-BLOCK_QUALIFIED_ANSWER_START: the *solution hash*.  
-BLOCK_QUALIFIED_ANSWER_START: the solver's address.  
-BLOCK_QUALIFIED_ANSWER_START: the *salt*  
-BLOCK_QUALIFIED_ANSWER_START: the *solution hash*  
+BLOCK_QUALIFIED_ANSWER_START: The *solution hash*.  
+BLOCK_QUALIFIED_ANSWER_START: The solver's address.  
+BLOCK_QUALIFIED_ANSWER_START: The *salt*.  
+BLOCK_QUALIFIED_ANSWER_START: The *solution hash*.  
+
+// Pinned at: https://bafkreif67khnjmpa2fkq3dvg6ozymdz5h5iws4mdylpdfxellkfbn5eoiq.ipfs.dweb.link/  
+// Solution hash: 1419135518939604204422572184284210640446362562156245257070470995843683457046  
+// Token ID: [1]
