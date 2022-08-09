@@ -57,6 +57,8 @@ export default function SolveTester ({ tokenStats, tester }) {
     const verifyAnswersWasm = require("../../../public/verify_answers.wasm");
     const verifyAnswersZkey = require("../../../public/verify_answers_final.zkey");
 
+    console.log(verifyAnswersWasm, typeof verifyAnswersWasm)
+
     useEffect(() => {
         // must be on the correct chain
         setButtonState( prevState => ({
