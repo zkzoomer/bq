@@ -1,0 +1,2 @@
+export const VERIFY_ANSWERS_ZKEY_CID = "bafybeib76t3xuz3zgwshupevycbkfvgln6a7laqpnnqj2ajiv2sambyfke"
+export const VERIFY_ANSWERS_WASM_CID = "bafybeie2civnvp337qpkphcswy7fteyzo3ovwdtumvuvl676vbpy4owwmy"

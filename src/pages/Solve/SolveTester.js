@@ -54,6 +54,9 @@ export default function SolveTester ({ tokenStats, tester }) {
         chainId,
     } = useWeb3React();
 
+    const verifyAnswersWasm = require("../../../public/verify_answers.wasm");
+    const verifyAnswersZkey = require("../../../public/verify_answers_final.zkey");
+
     useEffect(() => {
         // must be on the correct chain
         setButtonState( prevState => ({
@@ -94,8 +97,8 @@ export default function SolveTester ({ tokenStats, tester }) {
                 "answers": answers,
                 "salt": Math.floor(Math.random() * 1_000_000_000_000_000).toString()
             },
-            require("../../proof/verify_answers.wasm"),
-            require("../../proof/verify_answers_final.zkey")
+            verifyAnswersWasm,
+            verifyAnswersZkey
         )
 
         console.log(proof)

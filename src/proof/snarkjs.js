@@ -22575,8 +22575,6 @@ var groth16 = /*#__PURE__*/Object.freeze({
     exportSolidityCallData: groth16ExportSolidityCallData
 });
 
-console.log(groth16)
-
 Object.defineProperty(exports, '__esModule', { value: true });
 
 export async function _groth16FullProve(_input, wasmFile, zkeyFileName, logger) {
