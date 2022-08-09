@@ -62,9 +62,9 @@ export default function SolveTester ({ tokenStats, tester }) {
         // must be on the correct chain, and account cannot be owner
         setButtonState( prevState => ({
             ...prevState,
-            enabled: correctChain && account !== tokenStats.owner
+            enabled: correctChain && account !== tokenStats.owner && !tokenStats._notSolvable
         }))
-    }, [correctChain, account])
+    }, [correctChain, account, tokenStats])
 
 
     const handleClick = async () => {

@@ -13,6 +13,7 @@ import TesterCard from "../../components/TesterCard";
 import SolveTester from "./SolveTester";
 import { theme } from "../../theme";
 import { DeleteButton } from "../../components/Button";
+import { ZERO_ADDRESS } from "../../constants/values";
 
 const SolveWrapper = styled.div`
     display: flex;
@@ -47,6 +48,16 @@ const NotFoundText = styled.div`
     font-family: 'Inter Bold';
     font-size: 1.5rem;
     color: var(--error);
+`
+
+const ErrorText = styled.div`
+    text-align: justify;
+    text-justify: inter-word;
+    padding-top: 10px;
+
+    font-family: 'Inter Bold';
+    font-size: 1rem;
+    color: var(--error); 
 `
 
 const TopRow = styled.div`
@@ -109,6 +120,7 @@ const CardWrapper = styled.div`
 
 const emptyTokenStats = {
     _exists: null,
+    _notSolvable: null,
     tokenId: "",
     owner: "_owner",
     solutionHash: "",
@@ -116,7 +128,7 @@ const emptyTokenStats = {
     solvers: "",
     timeLimit: "",
     credentialLimit: "",
-    requiredPass: "",
+    requiredPass: ZERO_ADDRESS,
     credentialsGained: "",
     testerURI: "",
 }
@@ -138,20 +150,30 @@ export default function TesterPage ({ tokenId }) {
         chainId,
     } = useWeb3React();
 
+    const testerContract = new ethers.Contract(
+        DEPLOYED_CONTRACTS[80001].TesterCreator,
+        require('../../abis/TesterCreator.json')['abi'],
+        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+    )
+
     useEffect(() => {
         const fetchTokenData = async () => {
-            const testerContract = new ethers.Contract(
-                DEPLOYED_CONTRACTS[80001].TesterCreator,
-                require('../../abis/TesterCreator.json')['abi'],
-                new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
-            )
             
             try {
                 const _testerStats = await testerContract.getTester(tokenId)
                 const _owner = await testerContract.ownerOf(tokenId)
                 const testerURI = await testerContract.tokenURI(tokenId)
+
+                let notSolvable = null
+                if ( parseInt(_testerStats.solvers) === parseInt(_testerStats.credentialLimit)) {
+                    notSolvable = "Test cannot be solved anymore: credential limit reached."
+                } else if ( Math.floor(Date.now() / 1000) >= parseInt(_testerStats.timeLimit) ) {
+                    notSolvable = "Test cannot be solved anymore: time limit reached."
+                }
+
                 const testerStats = {
                     _exists: true,
+                    _notSolvable: notSolvable,
                     tokenId: '' + tokenId,
                     owner: _owner,
                     solutionHash: _testerStats.solutionHash.toString(),
@@ -187,7 +209,7 @@ export default function TesterPage ({ tokenId }) {
         if (tokenStats) {
             fetchTester()
         }
-    }, [tokenStats])
+    }, [tokenStats.testerURI])
 
     useEffect(() => {
         setDeleteButtonState( prevState => ({
@@ -197,10 +219,31 @@ export default function TesterPage ({ tokenId }) {
         }))
     }, [tokenStats, account, correctChain])
 
+    // check if account owns the required pass 
+    useEffect(() => {
+        const fetchData = async () => { 
+            const requiredPass = new ethers.Contract(
+                tokenStats.requiredPass,
+                require('../../abis/RequiredPass.json')['abi'],
+                new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+            ) 
+            const userBalance = await requiredPass.balanceOf(account)
+            
+            if ( parseInt(userBalance) === 0 ) {
+
+                setTokenStats( prevState => ({
+                    ...prevState,
+                    _notSolvable: "You cannot solve this test as you do not own the required pass"
+                }))
+            }
+        }
+        if ( tokenStats.requiredPass !== ZERO_ADDRESS && !!account) {
+            fetchData()
+        }
+    }, [tokenStats.requiredPass, account])
 
     const TitleAndDescription = () => {
 
-        
         const handleDeleteClick = async () => {
             setDeleteButtonState( prevState => ({
                 ...prevState,
@@ -260,6 +303,9 @@ export default function TesterPage ({ tokenId }) {
                         :
                             null
                     }
+                    <ErrorText>
+                        {tokenStats._notSolvable}
+                    </ErrorText>
                 </TitleAndDescriptionWrapper>
             )
         } else {
@@ -292,6 +338,9 @@ export default function TesterPage ({ tokenId }) {
                         :
                             null
                     }
+                    <ErrorText>
+                        {tokenStats._notSolvable}
+                    </ErrorText>
                 </TitleAndDescriptionWrapper>
             )
         }
