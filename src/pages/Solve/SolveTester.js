@@ -51,21 +51,21 @@ export default function SolveTester ({ tokenStats, tester }) {
 
     const {
         library,
+        account,
         chainId,
     } = useWeb3React();
 
-    const verifyAnswersWasm = require("../../../public/verify_answers.wasm");
-    const verifyAnswersZkey = require("../../../public/verify_answers_final.zkey");
-
-    console.log(verifyAnswersWasm, typeof verifyAnswersWasm)
+    const verifyAnswersWasm = require("../../proof/verify_answers.wasm");
+    const verifyAnswersZkey = require("../../proof/verify_answers_final.zkey");
 
     useEffect(() => {
-        // must be on the correct chain
+        // must be on the correct chain, and account cannot be owner
         setButtonState( prevState => ({
             ...prevState,
-            enabled: correctChain
+            enabled: correctChain && account !== tokenStats.owner
         }))
-    }, [correctChain])
+    }, [correctChain, account])
+
 
     const handleClick = async () => {
         setButtonState( prevState => ({

@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Contract } from "@ethersproject/contracts";
+import { useWeb3React } from "@web3-react/core";
 import styled from "styled-components"
 import { ethers } from "ethers"; 
+import { Spinner } from "react-bootstrap";
+import { FaTrashAlt } from "react-icons/fa";
 
 import { DEPLOYED_CONTRACTS } from "../../constants/chains";
 import { stylizeTokenId, tokenUriToTest } from "./helpers";
 import TesterCard from "../../components/TesterCard";
 import SolveTester from "./SolveTester";
 import { theme } from "../../theme";
-import { Spinner } from "react-bootstrap";
+import { DeleteButton } from "../../components/Button";
 
 const SolveWrapper = styled.div`
     display: flex;
@@ -62,7 +67,7 @@ const TitleAndDescriptionWrapper = styled.div`
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: center;
     order: 1;
 
@@ -102,9 +107,36 @@ const CardWrapper = styled.div`
     }
 `
 
+const emptyTokenStats = {
+    _exists: null,
+    tokenId: "",
+    owner: "_owner",
+    solutionHash: "",
+    prize: "",
+    solvers: "",
+    timeLimit: "",
+    credentialLimit: "",
+    requiredPass: "",
+    credentialsGained: "",
+    testerURI: "",
+}
+
 export default function TesterPage ({ tokenId }) {
-    const [tokenStats, setTokenStats] = useState(null);
+    const correctChain = useSelector(state => state.chain.correctChain);
+
+    const [tokenStats, setTokenStats] = useState(emptyTokenStats);
     const [tester, setTester] = useState(null);
+    const [deleteButtonState, setDeleteButtonState] = useState({
+        active: false,
+        enabled: false,
+        awaiting: false
+    })
+
+    const {
+        library,
+        account,
+        chainId,
+    } = useWeb3React();
 
     useEffect(() => {
         const fetchTokenData = async () => {
@@ -119,6 +151,7 @@ export default function TesterPage ({ tokenId }) {
                 const _owner = await testerContract.ownerOf(tokenId)
                 const testerURI = await testerContract.tokenURI(tokenId)
                 const testerStats = {
+                    _exists: true,
                     tokenId: '' + tokenId,
                     owner: _owner,
                     solutionHash: _testerStats.solutionHash.toString(),
@@ -132,7 +165,10 @@ export default function TesterPage ({ tokenId }) {
                 }
                 setTokenStats(testerStats)
             } catch (err) {
-                setTokenStats(false)
+                setTokenStats( prevState => ({
+                    ...prevState,
+                    _exists: false
+                }))
             }
         }
         fetchTokenData()
@@ -153,8 +189,41 @@ export default function TesterPage ({ tokenId }) {
         }
     }, [tokenStats])
 
+    useEffect(() => {
+        setDeleteButtonState( prevState => ({
+            ...prevState,
+            active: account === tokenStats.owner,
+            enabled: correctChain,
+        }))
+    }, [tokenStats, account, correctChain])
+
+
     const TitleAndDescription = () => {
 
+        
+        const handleDeleteClick = async () => {
+            setDeleteButtonState( prevState => ({
+                ...prevState,
+                awaiting: true
+            }))
+
+            const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
+            const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
+
+            try {
+                await testerCreator.deleteTester(
+                    tokenStats.tokenId
+                )
+            } catch (err) {
+                console.log(err)
+            }
+
+            setDeleteButtonState( prevState => ({
+                ...prevState,
+                awaiting: false
+            }))
+        }
+        
         if ( tester === null ) {
             return(
                 <TitleAndDescriptionWrapper>
@@ -170,6 +239,27 @@ export default function TesterPage ({ tokenId }) {
                         Test format is not supported
                     </NotFoundText>
                     You can try and check the token URI directly: {tokenStats.testerURI}
+                    {
+                        deleteButtonState.active ? 
+                            <DeleteButton 
+                                disabled={deleteButtonState.awaiting}
+                                isEnabled={deleteButtonState.enabled}
+                                onClick={handleDeleteClick}
+                            >
+                                {
+                                    deleteButtonState.awaiting ?
+                                        <>
+                                            Sending tx...&nbsp;&nbsp;<Spinner animation="border" size="sm" />
+                                        </>
+                                    :
+                                        <>
+                                            <FaTrashAlt />&nbsp;&nbsp;Delete Test
+                                        </>
+                                } 
+                            </DeleteButton>
+                        :
+                            null
+                    }
                 </TitleAndDescriptionWrapper>
             )
         } else {
@@ -181,13 +271,34 @@ export default function TesterPage ({ tokenId }) {
                     <DescriptionText>
                         {tester.description}
                     </DescriptionText>
+                    {
+                        deleteButtonState.active ? 
+                            <DeleteButton 
+                                disabled={deleteButtonState.awaiting}
+                                isEnabled={deleteButtonState.enabled}
+                                onClick={handleDeleteClick}
+                            >
+                                {
+                                    deleteButtonState.awaiting ?
+                                        <>
+                                            Sending tx...&nbsp;&nbsp;<Spinner animation="border" size="sm" />
+                                        </>
+                                    :
+                                        <>
+                                            <FaTrashAlt />&nbsp;&nbsp;Delete Test
+                                        </>
+                                } 
+                            </DeleteButton>
+                        :
+                            null
+                    }
                 </TitleAndDescriptionWrapper>
             )
         }
         
     }
 
-    if ( tokenStats === null ) {
+    if ( tokenStats._exists === null ) {
         return (
             <SolveWrapper>
                 <LoadingText>
@@ -195,7 +306,7 @@ export default function TesterPage ({ tokenId }) {
                 </LoadingText>
             </SolveWrapper>
         )
-    } else if ( tokenStats === false ) {
+    } else if ( tokenStats._exists === false ) {
         return(
             <SolveWrapper>
                 <NotFoundText>

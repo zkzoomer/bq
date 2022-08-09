@@ -165,7 +165,7 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
 
     //returns an error string, empty if validated
     const validate = ({name, value}) => {
-        // TODO: actually check if the smart contract supports `balanceOf`
+        // required pass support for `balanceOf` gets checked inside the smart contract itself
         if (name === 'requiredPass') {
             return (!isValidAddress(value) && !!value) ? 'Not a valid contract address' : ''
         } 
