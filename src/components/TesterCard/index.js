@@ -9,16 +9,25 @@ import { ZERO_ADDRESS } from "../../constants/values"
 import { useEffect, useRef } from "react"
 
 const CardWrapper = styled.div`
+    position: relative;
+    z-index: 1; 
+
     height: 330px;
     width:  250px;    
     border-radius: 20px;
 
     padding-top: 5px;
-    
     box-shadow: 2px 2px 2px 1px var(--main-text);
     border: 1px solid var(--main-text);
     background-color: transparent;
     transition: all 0.2s ease-in-out;
+
+    cursor: ${({isClickable}) => (isClickable ? `pointer` : `default`)};
+
+    &:hover {
+        box-shadow: ${({isClickable}) => (isClickable ? `0px 0px 0px 0px` : `2px 2px 2px 1px var(--main-text)`)};
+        margin: ${({isClickable}) => (isClickable ? `2px 0px -2px 0px` : `0px 0px 0px 0px`)};
+    }
 `
 
 const TesterIdWrapper = styled.div`
@@ -75,6 +84,9 @@ const Link = styled.a`
         color: var(--alt-text);
         text-decoration: underline;
     }
+
+    position: relative;
+    z-index: 2; 
 `
 
 const InlineNavLink = styled(NavLink)`
@@ -88,6 +100,9 @@ const InlineNavLink = styled(NavLink)`
         color: var(--alt-text);
         text-decoration: underline;
     }
+
+    position: relative;
+    z-index: 2; 
 `
 
 const Trophy = styled(FaTrophy)`
@@ -130,8 +145,8 @@ const StyledIdenticon = styled.div`
     padding-right: 5px;
 `
 
-
-export default function TesterCard ({ tokenStats }) {
+// TODO: link to credential owners when it has been solved SOMEWHERE
+export default function TesterCard ({ tokenStats, isClickable }) {
 
     function Identicon () {
         const ref = useRef();
@@ -146,8 +161,12 @@ export default function TesterCard ({ tokenStats }) {
         return <StyledIdenticon ref={ref} />
     }
 
+    const handleClick = () => {
+        window.location.href = '/solve/' + tokenStats.tokenId
+    }
+
     return (
-        <CardWrapper>
+        <CardWrapper isClickable={isClickable} onClick={handleClick} >
             <TesterIdWrapper>
                 TEST {stylizeTokenId(tokenStats.tokenId)}
             </TesterIdWrapper>

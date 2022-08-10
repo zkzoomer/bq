@@ -1,14 +1,10 @@
-import { useLayoutEffect, useRef, useState } from "react"
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styled from "styled-components"
-import { FaTimes, FaCode, FaPlus } from 'react-icons/fa'
-import { ViewIcon } from '@chakra-ui/icons'
 
 import style from "../../styles/markdown-styles.module.css"
-import { AddElementButton, AnswerButton, RemoveElementButton, SetPreviewButton } from "../../components/Button"
-import { getNumberOfAnswers, answerKeyToLetter, answerKeyToNumber } from "./helpers"
-import { MAX_ANSWERS } from "../../constants/values"
+import { AnswerButton } from "../../components/Button"
+import { answerKeyToLetter, answerKeyToNumber } from "./helpers"
 import { theme } from "../../theme"
 
 const QuestionBox = styled.div`
@@ -23,6 +19,10 @@ const QuestionBox = styled.div`
     border: ${({hasError}) => (hasError ? `1px solid var(--error)` : `1px solid var(--main-text)`)};
     background-color: transparent;
     transition: all 0.2s ease-in-out;
+
+    @media (max-width: ${theme.breakpoint}px) {
+        width:  100%;
+    }
 `
 
 const TopRow = styled.div`
@@ -63,13 +63,14 @@ const AnswerButtonsWrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: start;
+    align-items: start;
 
     padding-right: 10px;
 
     @media (max-width: ${theme.breakpoint}px) {
-        width: 35%;
+        padding-bottom: 15px;
+        width: 100%;
         flex-direction: row;
     }
 `

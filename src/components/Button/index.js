@@ -110,15 +110,14 @@ export const RemoveElementButton = styled.button`
     align-items: center;
     justify-content: center; 
 
-    width: 100%;
     height: 25px;
+    min-width: 50px;
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
     font-size: 16px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
-    margin: 4px 0 4px 0;
     border: 1px solid var(--main-text);
     box-shadow: 2px 2px 2px 1px var(--main-text);
     background-color: transparent;
@@ -127,7 +126,7 @@ export const RemoveElementButton = styled.button`
     &:hover {
         background-color: var(--error);
         box-shadow: 0 0 0 white;
-        margin: 6px 0 2px 0;
+        margin: 2px 0 -2px 0;
     }
 `
 
@@ -194,7 +193,7 @@ export const AnswerButton = styled.button`
     align-items: center;
     justify-content: center; 
     
-    width: 100%;
+    width: 50px;
     height: 25px;
     border-radius: 5px;
     padding: 5px 15px 5px 15px;
@@ -202,14 +201,14 @@ export const AnswerButton = styled.button`
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
-    margin: ${({isClicked}) => (isClicked ? `2px 0px 2px 0px` : `0px 0px 4px 0px`)};
+    margin: ${({isClicked}) => (isClicked ? `2px 0px 8px 0px` : `0px 0px 10px 0px`)};
     border: 1px solid var(--main-text);
     box-shadow: ${({isClicked}) => (isClicked ? `0 0 0 white` : `2px 2px 2px 1px var(--main-text)`)};
     background-color: ${({isClicked}) => (isClicked ? `var(--success)` : `transparent`)};
     color: var(--main-text);
 
     @media (max-width: ${theme.breakpoint}px) {
-        margin-right: 10px;
+        margin: ${({isClicked}) => (isClicked ? `2px 10px -2px 0px` : `0px 10px 0px 0px`)};
     }
 `
 

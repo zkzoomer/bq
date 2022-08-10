@@ -43,6 +43,7 @@ const Header = styled.button`
 
     @media (max-width: ${theme.breakpoint}px) {
         padding: 0;
+        font-size: 1rem;
         margin: 10px 0 10px 0;
     }
 `

@@ -92,14 +92,13 @@ const AnswerButtonsWrapper = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+    justify-content: start;
+    align-items: end;
+    margin: 4px 0px 4px 0px;
     padding-right: 10px;
 
     @media (max-width: ${theme.breakpoint}px) {
-        width: 35%;
-        flex-direction: row;
+       flex-direction: row;
     }
 `
 

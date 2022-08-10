@@ -26,6 +26,10 @@ const SolveWrapper = styled.div`
     width: 100%;
     background-color: var(--main-background);
     min-height: calc(100vh - 120px);
+
+    @media (max-width: ${theme.breakpoint}px) {
+        padding-top: 0px;
+    }
 `
 
 const LoadingText = styled.div`
@@ -80,6 +84,7 @@ const TitleAndDescriptionWrapper = styled.div`
     flex-direction: column;
     align-items: start;
     justify-content: center;
+    text-align: start;
     order: 1;
 
     @media (max-width: ${theme.breakpoint}px) {
@@ -115,6 +120,9 @@ const CardWrapper = styled.div`
 
     @media (max-width: ${theme.breakpoint}px) {
         order: 1;
+        justify-content: center;
+        padding-top: 10px;
+        padding-bottom: 50px;
     }
 `
 
@@ -133,6 +141,7 @@ const emptyTokenStats = {
     testerURI: "",
 }
 
+// TODO: must show connected account if they own the credential
 export default function TesterPage ({ tokenId }) {
     const correctChain = useSelector(state => state.chain.correctChain);
 
@@ -201,10 +210,11 @@ export default function TesterPage ({ tokenId }) {
             let tester
             try {
                 tester = await tokenUriToTest(tokenStats.testerURI)
+                setTester(tester)
             } catch (err) {
                 tester = false
+                setTester(tester)
             }
-            setTester(tester)
         }
         if (tokenStats) {
             fetchTester()
@@ -281,7 +291,9 @@ export default function TesterPage ({ tokenId }) {
                     <NotFoundText>
                         Test format is not supported
                     </NotFoundText>
-                    You can try and check the token URI directly: {tokenStats.testerURI}
+                    You can try and check the token URI directly: 
+                    <br />
+                    {tokenStats.testerURI}
                     {
                         deleteButtonState.active ? 
                             <DeleteButton 

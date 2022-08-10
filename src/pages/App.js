@@ -11,7 +11,7 @@ import '../styles/App.css'
 import { Home } from './Home';
 import ScrollToTop from '../hooks/scrollToTop';
 import { Create } from './Create';
-import { Profile } from './Profile';
+import { AccountProfile, Profile } from './Profile';
 import { Browse } from './Browse';
 import { Help } from './Help';
 import { NotFound } from './NotFound';
@@ -49,7 +49,8 @@ function App() {
             <Route path="/create" element={<Create />} />
             <Route path="/browse" element={<Browse />} />
             <Route path="/solve/*" element={<Solve />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<AccountProfile />} />
+            <Route path="/profile/*" element={<Profile />} />
             <Route path="/help" element={<Help />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
