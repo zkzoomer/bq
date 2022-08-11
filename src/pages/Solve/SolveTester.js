@@ -15,6 +15,8 @@ import { setError } from '../../state/error/reducer';
 import { getNumberOfQuestions } from "./helpers";
 
 import { _groth16FullProve } from "../../proof/snarkjs";
+import { genProof } from "../../proof/utils";
+import { rootFromLeafArray } from "../../proof/poseidonMerkle";
 
 const QuestionsWrapper = styled.div`
     display: flex;
@@ -35,7 +37,7 @@ const zeroAnswers = []
 const noQuestionErrors = []
 for (var i = 1; i <= MAX_QUESTIONS; i++) {
     noQuestionErrors.push(false)
-    zeroAnswers.push(1)
+    zeroAnswers.push(0)
 }
 
 export default function SolveTester ({ tokenStats, tester }) {
@@ -55,8 +57,8 @@ export default function SolveTester ({ tokenStats, tester }) {
         chainId,
     } = useWeb3React();
 
-    const verifyAnswersWasm = require("../../proof/verify_answers.wasm");
-    const verifyAnswersZkey = require("../../proof/verify_answers_final.zkey");
+    const verifyAnswersWasmPath = ("https://bafybeie2civnvp337qpkphcswy7fteyzo3ovwdtumvuvl676vbpy4owwmy.ipfs.dweb.link/verify_answers.wasm");
+    const verifyAnswersZkeyPath = ("https://bafybeib76t3xuz3zgwshupevycbkfvgln6a7laqpnnqj2ajiv2sambyfke.ipfs.dweb.link/verify_answers_final.zkey");
 
     useEffect(() => {
         // must be on the correct chain, and account cannot be owner
@@ -70,7 +72,7 @@ export default function SolveTester ({ tokenStats, tester }) {
     const handleClick = async () => {
         setButtonState( prevState => ({
             ...prevState,
-            awaiting: true
+            awaiting: 'Generating proof...'
         }))
 
         let allQuestionsAnswered = true;
@@ -93,21 +95,44 @@ export default function SolveTester ({ tokenStats, tester }) {
             return
         }
 
+        console.log('solution hash: ', rootFromLeafArray(answers).toString())
+
         // all answers set, make proof
-        const { proof, publicSignals } = await _groth16FullProve(
+        const { proof, publicSignals } = await genProof(
             {
                 "answers": answers,
                 "salt": Math.floor(Math.random() * 1_000_000_000_000_000).toString()
             },
-            verifyAnswersWasm,
-            verifyAnswersZkey
+            require("../../proof/verify_answers.wasm"),
+            require("../../proof/verify_answers_final.zkey")
         )
+
+        setButtonState( prevState => ({
+            ...prevState,
+            awaiting: 'Sending tx...'
+        }))
 
         console.log(proof)
         console.log(publicSignals)
 
         const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
         const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
+
+        try {
+            await testerCreator.solveTester(
+                tokenStats.tokenId,
+                [proof.pi_a[0], proof.pi_a[1]],
+                [[proof.pi_b[0][1], proof.pi_b[0][0]], [proof.pi_b[1][1], proof.pi_b[1][0]]],
+                [proof.pi_c[0], proof.pi_c[1]],
+                publicSignals
+            )
+        } catch (err) {
+            console.log(err)
+            setButtonState( prevState => ({
+                ...prevState,
+                awaiting: false
+            }))
+        }
 
         setButtonState( prevState => ({
             ...prevState,
@@ -158,7 +183,7 @@ export default function SolveTester ({ tokenStats, tester }) {
                         {
                             buttonState.awaiting ? 
                                 <>
-                                    Sending tx...&nbsp;&nbsp;<Spinner animation="border" size="sm" />
+                                    {buttonState.awaiting}&nbsp;&nbsp;<Spinner animation="border" size="sm" />
                                 </>
                             :
                                 <>

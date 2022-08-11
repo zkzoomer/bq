@@ -16271,8 +16271,11 @@ const threadSource = stringToBase64("(" + thread.toString() + ")(self)");
 const workerSource = "data:application/javascript;base64," + threadSource;
 
 
+// TODO: clean this up and trace the singleThread call up
+async function buildThreadManager(wasm, /* singleThread */) {
 
-async function buildThreadManager(wasm, singleThread) {
+    const singleThread= true
+
     const tm = new ThreadManager();
 
     tm.memory = new WebAssembly.Memory({initial:MEM_SIZE});
@@ -17629,7 +17632,6 @@ async function buildEngine(params) {
 
     const tm = await buildThreadManager(params.wasm, params.singleThread);
 
-
     const curve = {};
 
     curve.q = e(params.wasm.q.toString());
@@ -18685,6 +18687,7 @@ async function buildBn128(singleThread, plugins) {
     moduleBuilder.setMemory(25);
     buildBn128$1(moduleBuilder);
 
+
     if (plugins) plugins(moduleBuilder);
 
     const bn128wasm = {};
@@ -18718,6 +18721,7 @@ async function buildBn128(singleThread, plugins) {
         singleThread: singleThread ? true : false
     };
 
+    // FAILS SOMEWHERE DOWN HERE
     const curve = await buildEngine(params);
     curve.terminate = async function () {
         if (!params.singleThread) {
@@ -18729,7 +18733,6 @@ async function buildBn128(singleThread, plugins) {
     if (!singleThread) {
         curve_bn128 = curve;
     }
-
     return curve;
 }
 
@@ -22577,14 +22580,113 @@ var groth16 = /*#__PURE__*/Object.freeze({
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-export async function _groth16FullProve(_input, wasmFile, zkeyFileName, logger) {
-    const input = unstringifyBigInts$6(_input);
+export async function _groth16Prove(zkeyFileName, witnessFileName, logger) {
+    const {fd: fdWtns, sections: sectionsWtns} = await readBinFile(witnessFileName, "wtns", 2);
 
-    const wtns= {
-        type: "mem"
-    };
-    await wtnsCalculate(input, wasmFile, wtns);
-    return await groth16Prove(zkeyFileName, wtns, logger);
+    const wtns = await readHeader(fdWtns, sectionsWtns);
+
+    const {fd: fdZKey, sections: sectionsZKey} = await readBinFile(zkeyFileName, "zkey", 2);
+
+    const zkey = await readHeader$1(fdZKey, sectionsZKey);
+
+
+    if (zkey.protocol != "groth16") {
+        throw new Error("zkey file is not groth16");
+    }
+
+    if (!Scalar.eq(zkey.r,  wtns.q)) {
+        throw new Error("Curve of the witness does not match the curve of the proving key");
+    }
+
+    if (wtns.nWitness != zkey.nVars) {
+        throw new Error(`Invalid witness length. Circuit: ${zkey.nVars}, witness: ${wtns.nWitness}`);
+    }
+
+    const curve = zkey.curve;
+    const Fr = curve.Fr;
+    const G1 = curve.G1;
+    const G2 = curve.G2;
+
+    const power = log2(zkey.domainSize);
+
+    if (logger) logger.debug("Reading Wtns");
+    const buffWitness = await readSection(fdWtns, sectionsWtns, 2);
+    if (logger) logger.debug("Reading Coeffs");
+    const buffCoeffs = await readSection(fdZKey, sectionsZKey, 4);
+
+    if (logger) logger.debug("Building ABC");
+    const [buffA_T, buffB_T, buffC_T] = await buildABC1(curve, zkey, buffWitness, buffCoeffs, logger);
+
+    const inc = power == Fr.s ? curve.Fr.shift : curve.Fr.w[power+1];
+
+    const buffA = await Fr.ifft(buffA_T, "", "", logger, "IFFT_A");
+    const buffAodd = await Fr.batchApplyKey(buffA, Fr.e(1), inc);
+    const buffAodd_T = await Fr.fft(buffAodd, "", "", logger, "FFT_A");
+
+    const buffB = await Fr.ifft(buffB_T, "", "", logger, "IFFT_B");
+    const buffBodd = await Fr.batchApplyKey(buffB, Fr.e(1), inc);
+    const buffBodd_T = await Fr.fft(buffBodd, "", "", logger, "FFT_B");
+    const buffC = await Fr.ifft(buffC_T, "", "", logger, "IFFT_C");
+    const buffCodd = await Fr.batchApplyKey(buffC, Fr.e(1), inc);
+    const buffCodd_T = await Fr.fft(buffCodd, "", "", logger, "FFT_C");
+    if (logger) logger.debug("Join ABC");
+    const buffPodd_T = await joinABC(curve, zkey, buffAodd_T, buffBodd_T, buffCodd_T, logger);
+    let proof = {};
+
+    if (logger) logger.debug("Reading A Points");
+    const buffBasesA = await readSection(fdZKey, sectionsZKey, 5);
+    proof.pi_a = await curve.G1.multiExpAffine(buffBasesA, buffWitness, logger, "multiexp A");
+    if (logger) logger.debug("Reading B1 Points");
+    const buffBasesB1 = await readSection(fdZKey, sectionsZKey, 6);
+    let pib1 = await curve.G1.multiExpAffine(buffBasesB1, buffWitness, logger, "multiexp B1");
+    if (logger) logger.debug("Reading B2 Points");
+    const buffBasesB2 = await readSection(fdZKey, sectionsZKey, 7);
+    proof.pi_b = await curve.G2.multiExpAffine(buffBasesB2, buffWitness, logger, "multiexp B2");
+    if (logger) logger.debug("Reading C Points");
+    const buffBasesC = await readSection(fdZKey, sectionsZKey, 8);
+    proof.pi_c = await curve.G1.multiExpAffine(buffBasesC, buffWitness.slice((zkey.nPublic+1)*curve.Fr.n8), logger, "multiexp C");
+    if (logger) logger.debug("Reading H Points");
+    const buffBasesH = await readSection(fdZKey, sectionsZKey, 9);
+    const resH = await curve.G1.multiExpAffine(buffBasesH, buffPodd_T, logger, "multiexp H");
+    const r = curve.Fr.random();
+    const s = curve.Fr.random();
+
+    proof.pi_a  = G1.add( proof.pi_a, zkey.vk_alpha_1 );
+    proof.pi_a  = G1.add( proof.pi_a, G1.timesFr( zkey.vk_delta_1, r ));
+
+    proof.pi_b  = G2.add( proof.pi_b, zkey.vk_beta_2 );
+    proof.pi_b  = G2.add( proof.pi_b, G2.timesFr( zkey.vk_delta_2, s ));
+
+    pib1 = G1.add( pib1, zkey.vk_beta_1 );
+    pib1 = G1.add( pib1, G1.timesFr( zkey.vk_delta_1, s ));
+
+    proof.pi_c = G1.add(proof.pi_c, resH);
+
+    proof.pi_c  = G1.add( proof.pi_c, G1.timesFr( proof.pi_a, s ));
+    proof.pi_c  = G1.add( proof.pi_c, G1.timesFr( pib1, r ));
+    proof.pi_c  = G1.add( proof.pi_c, G1.timesFr( zkey.vk_delta_1, Fr.neg(Fr.mul(r,s) )));
+
+    let publicSignals = [];
+
+    for (let i=1; i<= zkey.nPublic; i++) {
+        const b = buffWitness.slice(i*Fr.n8, i*Fr.n8+Fr.n8);
+        publicSignals.push(Scalar.fromRprLE(b));
+    }
+
+    proof.pi_a = G1.toObject(G1.toAffine(proof.pi_a));
+    proof.pi_b = G2.toObject(G2.toAffine(proof.pi_b));
+    proof.pi_c = G1.toObject(G1.toAffine(proof.pi_c));
+
+    proof.protocol = "groth16";
+    proof.curve = curve.name;
+
+    await fdZKey.close();
+    await fdWtns.close();
+
+    proof = stringifyBigInts$2(proof);
+    publicSignals = stringifyBigInts$2(publicSignals);
+
+    return {proof, publicSignals};
 }
 
 

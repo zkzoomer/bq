@@ -20,8 +20,8 @@ export const CHAIN_IDS_NETWORK_PARAMETERS = {
 
 export const DEPLOYED_CONTRACTS = {
     80001: {
-        TesterCreator: "0x2982B69159753d65Cea1D1D8E2E11C6C17698420",
-        Credentials: "0xdf1624d85d8a037e2e4d4ee7da38229eea61b544"
+        TesterCreator: "0x361c8A11a0cc3c257fF09A80C319f956693cD254",
+        Credentials: "0x3d30F072Ae6b6E1A6B8Cabd5d4E3b59e60cEEB91"
     }
 }
 
