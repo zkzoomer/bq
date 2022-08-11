@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import styled from "styled-components"
 import { FaTrophy, FaExternalLinkAlt } from "react-icons/fa"
 import { NavLink } from "react-router-dom"
@@ -6,7 +7,6 @@ import Jazzicon from "@metamask/jazzicon";
 import { stylizeTokenId } from "../../pages/Solve/helpers"
 import { truncateAddress } from "../../hooks/utils"
 import { ZERO_ADDRESS } from "../../constants/values"
-import { useEffect, useRef } from "react"
 
 const CardWrapper = styled.div`
     position: relative;
@@ -86,7 +86,7 @@ const Link = styled.a`
     }
 
     position: relative;
-    z-index: 2; 
+    z-index: 99999999;
 `
 
 const InlineNavLink = styled(NavLink)`
@@ -102,7 +102,7 @@ const InlineNavLink = styled(NavLink)`
     }
 
     position: relative;
-    z-index: 2; 
+    z-index: 99999999;
 `
 
 const Trophy = styled(FaTrophy)`
@@ -166,7 +166,7 @@ export default function TesterCard ({ tokenStats, isClickable }) {
     }
 
     return (
-        <CardWrapper isClickable={isClickable} onClick={handleClick} >
+        <CardWrapper isClickable={isClickable} onClick={() => { if (isClickable) handleClick () }} >
             <TesterIdWrapper>
                 TEST {stylizeTokenId(tokenStats.tokenId)}
             </TesterIdWrapper>
@@ -215,7 +215,6 @@ export default function TesterCard ({ tokenStats, isClickable }) {
                 >
                     <Identicon />
                     {truncateAddress(tokenStats.owner)}
-                    &nbsp;&nbsp;
                 </InlineNavLink>
             </CreatorWrapper>
         </CardWrapper>

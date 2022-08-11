@@ -32,7 +32,7 @@ const BodyWrapper = styled.div`
     padding: 2rem 16px 16px 16px;
   }
 `
-// TODO: fix Page Not Found on netlify support guide, when entering a url directly like blockqualified.netlify.app/create
+
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch()

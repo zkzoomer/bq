@@ -285,3 +285,52 @@ export const DeleteButton = styled.button`
         margin: ${({isEnabled}) => (isEnabled ? `17px 0px 2px 0px` : `15px 0px 4px 0px`)};
     }
 `
+
+export const GainedButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    
+    width: 105px;
+    height: 25px;
+    border-radius: 5px 0 0 5px;
+    margin-bottom: 30px;
+    padding: 5px 15px 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    position: relative;
+    z-index: 999;
+
+    border: 1px solid var(--main-text);
+    border-right-width: 0px;
+    margin: ${({active}) => (active ? `6px 0px 2px 0px` : `4px 0px 4px 0px`)};
+    box-shadow: ${({active}) => (active ? `0 0 0 white` : `2px 2px 2px 1px var(--main-text)`)};
+    background-color: ${({active}) => (active ? `var(--alt-text)` : `transparent`)};
+    color: ${({active}) => (active ? `var(--light-text)` : `var(--main-text)`)};
+`
+
+export const OwnedButton = styled.button`
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    
+    width: 105px;
+    height: 25px;
+    border-radius: 0 5px 5px 0px;
+    margin-bottom: 30px;
+    padding: 5px 15px 5px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    position: relative;
+    z-index: 99999999;
+
+    border: 1px solid var(--main-text);
+    margin: ${({active}) => (active ? `6px 0px 2px 0px` : `4px 0px 4px 0px`)};
+    box-shadow: ${({active}) => (active ? `0 0 0 white` : `2px 2px 2px 1px var(--main-text)`)};
+    background-color: ${({active}) => (active ? `var(--alt-text)` : `var(--main-background)`)};
+    color: ${({active}) => (active ? `var(--light-text)` : `var(--main-text)`)};
+`

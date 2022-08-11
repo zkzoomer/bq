@@ -235,7 +235,7 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
             _state['Q' + MAX_QUESTIONS] = { Q: null, A: getNullAnswersDict('Q' + MAX_QUESTIONS) }
             return _state
         })
-        // TODO: shift errors as well
+        
         const index = toRemove - 1
         setErrors( prevState => {
             const _questionsErrors = [...prevState.questions]

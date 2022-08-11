@@ -99,6 +99,19 @@ const LoadingText = styled.div`
     color: var(--alt-text);
 `
 
+const LoadingCard = () => {
+    return(
+        <CardWrapper>
+            <LoadingCardWrapper>
+                <LoadingCardText>
+                    Loading token...
+                </LoadingCardText>
+                <Spinner animation="border" size="m" />
+            </LoadingCardWrapper>
+        </CardWrapper>
+    )
+}
+
 export function Browse () {
     const [cards, setCards] = useState({
         totalSupply: 0,
@@ -182,24 +195,11 @@ export function Browse () {
         )
     }
 
-    const LoadingCard = () => {
-        return(
-            <CardWrapper>
-                <LoadingCardWrapper>
-                    <LoadingCardText>
-                        Loading token...
-                    </LoadingCardText>
-                    <Spinner animation="border" size="m" />
-                </LoadingCardWrapper>
-            </CardWrapper>
-        )
-    }
-
     // TODO: solve clickable div inside clickable div issue
     return (
         <BrowseWrapper>
             <HeadText>
-                Browsing all credentials
+                Browsing all existing tests
             </HeadText>
             <CardGallery>
                 {

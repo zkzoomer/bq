@@ -141,7 +141,6 @@ const emptyTokenStats = {
     testerURI: "",
 }
 
-// TODO: must show connected account if they own the credential
 export default function TesterPage ({ tokenId }) {
     const correctChain = useSelector(state => state.chain.correctChain);
 

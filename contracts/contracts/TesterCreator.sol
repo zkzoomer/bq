@@ -220,6 +220,7 @@ contract TesterCreator is SolutionVerifier, ERC165Storage, IERC721, IERC721Metad
         emit Transfer(msg.sender, address(0), testerId);
     }
 
+    // TODO: failed solve reverts tx
     function solveTester(
         uint256 testerId, 
         uint[2] calldata a,

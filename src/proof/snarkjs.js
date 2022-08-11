@@ -11713,7 +11713,7 @@ var build_bn128 = function buildBN128(module, _prefix) {
         const c = f.getCodeBuilder();
 
         f.addCode(
-            c.call(g1mPrefix + "_normalize", c.getLocal("pP"), c.getLocal("ppreP")),  // TODO Remove if already in affine
+            c.call(g1mPrefix + "_normalize", c.getLocal("pP"), c.getLocal("ppreP")), 
         );
     }
 
@@ -11968,7 +11968,7 @@ var build_bn128 = function buildBN128(module, _prefix) {
         c.i32_const(pQ2 + f2size*2);
 
         f.addCode(
-            c.call(g2mPrefix + "_normalize", QX, cQX),  // TODO Remove if already in affine
+            c.call(g2mPrefix + "_normalize", QX, cQX), 
             c.call(f2mPrefix + "_copy", cQX, RX),
             c.call(f2mPrefix + "_copy", cQY, RY),
             c.call(f2mPrefix + "_one", RZ),
@@ -13145,7 +13145,7 @@ var build_bls12381 = function buildBLS12381(module, _prefix) {
         const c = f.getCodeBuilder();
 
         f.addCode(
-            c.call(g1mPrefix + "_normalize", c.getLocal("pP"), c.getLocal("ppreP")),  // TODO Remove if already in affine
+            c.call(g1mPrefix + "_normalize", c.getLocal("pP"), c.getLocal("ppreP")), 
         );
     }
 
