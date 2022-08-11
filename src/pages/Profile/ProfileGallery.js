@@ -245,7 +245,7 @@ export default function ProfileGallery ({ address, page, cards, setCards }) {
             if (cards[page].loadedCards === 0) {
                 return(
                     <LoadingText>
-                        Loading tokèns...&nbsp;&nbsp;<Spinner animation="border" size="m" />
+                        Loading tokens...&nbsp;&nbsp;<Spinner animation="border" size="m" />
                     </LoadingText>
                 )
             } else {

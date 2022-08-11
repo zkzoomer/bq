@@ -195,7 +195,7 @@ export function ProfilePage ({ address }) {
             }))
         }
         fetchData()
-    }, [])
+    }, [address])
 
     function Identicon () {
         const ref = useRef();
