@@ -227,7 +227,7 @@ contract TesterCreator is SolutionVerifier, ERC165Storage, IERC721, IERC721Metad
         uint[2][2] calldata b,
         uint[2] calldata c,
         uint[2] calldata input  // [solvingHash, salt]
-    ) external nonReentrant returns (bool verifiedSolution) {
+    ) external nonReentrant {
         require(_exists(testerId), "Solving test that does not exist");
         require(!usedSalts[input[1]], "Salt was already used");
 
@@ -239,17 +239,17 @@ contract TesterCreator is SolutionVerifier, ERC165Storage, IERC721, IERC721Metad
             require(RequiredPass(_tester.requiredPass).balanceOf(msg.sender) > 0, "Solver does not own the required token");
         }
 
-        verifiedSolution = verifySolution(a, b, c, input, _tester.solutionHash);
+        bool validSolution = verifySolution(a, b, c, input, _tester.solutionHash);
 
-        if (verifiedSolution) {
-            if (_tester.solvers == 0) {  // Was the first solver for this multiple choice test
-                payable(msg.sender).transfer(_tester.prize);
-            }
+        require(validSolution, "Invalid solution");
 
-            credentialsContract.giveCredentials(msg.sender, testerId);
+        if (_tester.solvers == 0) {  // Was the first solver for this multiple choice test
+            payable(msg.sender).transfer(_tester.prize);
+        }
 
-            _testers[testerId].solvers++;
-        } 
+        credentialsContract.giveCredentials(msg.sender, testerId);
+
+        _testers[testerId].solvers++;
 
         usedSalts[input[1]] = true;
     }

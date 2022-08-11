@@ -450,7 +450,6 @@ function shouldBehaveLikeTesterCreator(owner, newOwner, solver, altSolver, opera
             })
 
             context('when verification is not successful', function () {
-                let tx
                 let onChainTester = [
                     solutionHash,
                     prize,
@@ -461,20 +460,9 @@ function shouldBehaveLikeTesterCreator(owner, newOwner, solver, altSolver, opera
                     credentialsGained
                 ]
 
-                beforeEach(async function () {
-                    tx = await this.testerCreator.solveTester(
-                        firstTokenId,
-                        [proofB.pi_a[0], proofB.pi_a[1]],
-                        [[proofB.pi_b[0][1], proofB.pi_b[0][0]], [proofB.pi_b[1][1], proofB.pi_b[1][0]]],
-                        [proofB.pi_c[0], proofB.pi_c[1]],
-                        publicB,
-                        { from: solver }
-                    )
-                })
-
-                it('returns false', async function () {
-                    expect(
-                        await this.testerCreator.solveTester.call(
+                it('reverts', async function () {
+                    await expectRevert(
+                        this.testerCreator.solveTester.call(
                             firstTokenId,
                             [altProofB.pi_a[0], altProofB.pi_a[1]],
                             [[altProofB.pi_b[0][1], altProofB.pi_b[0][0]], [altProofB.pi_b[1][1], altProofB.pi_b[1][0]]],
@@ -482,7 +470,9 @@ function shouldBehaveLikeTesterCreator(owner, newOwner, solver, altSolver, opera
                             altPublicB,
                             { from: altSolver }
                         )
-                    ).to.be.false
+                        ,
+                        'Invalid solution'
+                    )
                 })
 
                 it('does not alter the on chain tester object', async function () {
@@ -526,16 +516,15 @@ function shouldBehaveLikeTesterCreator(owner, newOwner, solver, altSolver, opera
                 })
 
                 it('solves the tester', async function () {
-                    expect(
-                        await this.testerCreator.solveTester.call(
-                            firstTokenId,
-                            [proofA.pi_a[0], proofA.pi_a[1]],
-                            [[proofA.pi_b[0][1], proofA.pi_b[0][0]], [proofA.pi_b[1][1], proofA.pi_b[1][0]]],
-                            [proofA.pi_c[0], proofA.pi_c[1]],
-                            publicA,
-                            { from: solver }
-                        )
-                    ).to.be.true
+                    // solving tx clears
+                    await this.testerCreator.solveTester.call(
+                        firstTokenId,
+                        [proofA.pi_a[0], proofA.pi_a[1]],
+                        [[proofA.pi_b[0][1], proofA.pi_b[0][0]], [proofA.pi_b[1][1], proofA.pi_b[1][0]]],
+                        [proofA.pi_c[0], proofA.pi_c[1]],
+                        publicA,
+                        { from: solver }
+                    )
                 })
             })
 
@@ -563,16 +552,15 @@ function shouldBehaveLikeTesterCreator(owner, newOwner, solver, altSolver, opera
                 })
 
                 it('returns true', async function () {
-                    expect(
-                        await this.testerCreator.solveTester.call(
-                            firstTokenId,
-                            [altProofA.pi_a[0], altProofA.pi_a[1]],
-                            [[altProofA.pi_b[0][1], altProofA.pi_b[0][0]], [altProofA.pi_b[1][1], altProofA.pi_b[1][0]]],
-                            [altProofA.pi_c[0], altProofA.pi_c[1]],
-                            altPublicA,
-                            { from: altSolver }
-                        )
-                    ).to.be.true
+                    // tx clears
+                    await this.testerCreator.solveTester.call(
+                        firstTokenId,
+                        [altProofA.pi_a[0], altProofA.pi_a[1]],
+                        [[altProofA.pi_b[0][1], altProofA.pi_b[0][0]], [altProofA.pi_b[1][1], altProofA.pi_b[1][0]]],
+                        [altProofA.pi_c[0], altProofA.pi_c[1]],
+                        altPublicA,
+                        { from: altSolver }
+                    )
                 })
 
                 it('updates the on chain tester object', async function () {
