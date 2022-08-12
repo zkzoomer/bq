@@ -95,8 +95,6 @@ export default function SolveTester ({ tokenStats, tester }) {
             return
         }
 
-        console.log('solution hash: ', rootFromLeafArray(answers).toString())
-
         // all answers set, make proof
         const { proof, publicSignals } = await genProof(
             {
@@ -112,12 +110,10 @@ export default function SolveTester ({ tokenStats, tester }) {
             awaiting: 'Sending tx...'
         }))
 
-        console.log(proof)
-        console.log(publicSignals)
-
         const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
         const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
 
+        // TODO: set manual gas so that tx fails if not correct proof
         try {
             await testerCreator.solveTester(
                 tokenStats.tokenId,

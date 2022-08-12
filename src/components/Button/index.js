@@ -38,7 +38,7 @@ export const ProgressButton = styled.button`
     transition: all 0.2s ease-in-out;
 
     border: 1px solid var(--main-text);
-    background-color: ${({isCompleted}) => (isCompleted ? `var(--alt-text)` : `transparent`)};
+    background-color: ${({isCompleted}) => (isCompleted ? `var(--success)` : `transparent`)};
     color: ${({isCompleted}) => (isCompleted ? `var(--light-text)` : `var(--main-text)`)};
     margin: 4px 10px 4px 10px;
 
@@ -301,7 +301,7 @@ export const GainedButton = styled.button`
     transition: all 0.2s ease-in-out;
 
     position: relative;
-    z-index: 999;
+    z-index: 1;
 
     border: 1px solid var(--main-text);
     border-right-width: 0px;
@@ -326,7 +326,7 @@ export const OwnedButton = styled.button`
     transition: all 0.2s ease-in-out;
 
     position: relative;
-    z-index: 99999999;
+    z-index: 2;
 
     border: 1px solid var(--main-text);
     margin: ${({active}) => (active ? `6px 0px 2px 0px` : `4px 0px 4px 0px`)};

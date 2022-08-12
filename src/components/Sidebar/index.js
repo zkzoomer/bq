@@ -25,6 +25,8 @@ const SidebarWrapper = styled.aside`
     opacity: ${({ isOpen }) => (isOpen ? '100%' : '0%')};
     left: ${({ isOpen }) => (isOpen ? '0%' : '-100%')};
 
+    position: absolute;
+    z-index: 999;
 `
 
 const SidebarTitle = styled.div`
