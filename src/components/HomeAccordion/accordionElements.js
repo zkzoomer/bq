@@ -33,10 +33,7 @@ const InlineLink = styled.a`
 `
 
 const ExplanationSection = styled.div`
-    /* height: 500px; */
     width: 100%;
-    /* padding-left: 15%;
-    padding-right:15%; */
     display: flex;
     justify-content: center;
     align-items: center;

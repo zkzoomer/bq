@@ -5,25 +5,21 @@ import styled from "styled-components"
 
 import { theme } from "../../theme"
 
-const Wrapper = styled.div`
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`
-
 const Box = styled.div`
     width:  70%;
-    min-width: 380px;
     border-radius: 5px;
 
     padding: 5px 15px 5px 15px;
     margin: 0px 10px 20px 10px;
-
+    
     box-shadow: ${({hasError}) => (hasError ? `2px 2px 2px 1px var(--error)` : `2px 2px 2px 1px var(--main-text)`)};
     border: ${({hasError}) => (hasError ? `1px solid var(--error)` : `1px solid var(--main-text)`)};
     background-color: transparent;
     transition: all 0.2s ease-in-out;
+
+    @media (max-width: ${theme.breakpoint}px) {
+        width: 100%;
+    }
 `
 
 const TopText = styled.div`
@@ -64,10 +60,10 @@ const RowTitle = styled.div`
 
 const TextareaBox = styled.textarea`
     width: 100%;
-    min-height: 80px;
+    height: 50px;
     border-radius: 5px;
     padding: 3px 0 3px 10px;
-    margin: 2px 0px 2px 0px;
+    margin: 4px 0px 4px 0px;
     box-shadow: 2px 2px 2px 1px var(--main-text);
     border: 1px solid var(--main-text);
     display: block;
@@ -86,7 +82,7 @@ const TextareaBox = styled.textarea`
         outline: 0;
         border: 1px solid var(--alt-text);
         box-shadow: 0 0 0 white;
-        margin: 4px 0px 0px 0px;
+        margin: 6px 0px 2px 0px;
     }
 `
 
@@ -94,7 +90,7 @@ const InputBox = styled.input`
     width: 100%;
     border-radius: 5px;
     padding: 3px 0 3px 10px;
-    margin: 2px 0px 2px 0px;
+    margin: 4px 0px 4px 0px;
     box-shadow: 2px 2px 2px 1px var(--main-text);
     border: 1px solid var(--main-text);
     display: block;
@@ -172,25 +168,23 @@ export default function TitleAndDescription ({ test, setTest, hasError }) {
         }))
     }
 
-    return (
-        <Wrapper>     
-            <Box hasError={hasError}>
-                <TopText>
-                    Define your multiple choice test
-                </TopText>
-                <Row>
-                    <RowTitle>
-                        Title:
-                    </RowTitle>
-                    <InputTitle title={test.title} setTitle={setTitle} />
-                </Row>
-                <Row>
-                    <RowTitle>
-                        Description:
-                    </RowTitle>
-                    <InputDescription title={test.description} setDescription={setDescription} />
-                </Row>
-            </Box>
-        </Wrapper>
+    return ( 
+        <Box hasError={hasError}>
+            <TopText>
+                Define your multiple choice test
+            </TopText>
+            <Row>
+                <RowTitle>
+                    Title:
+                </RowTitle>
+                <InputTitle title={test.title} setTitle={setTitle} />
+            </Row>
+            <Row>
+                <RowTitle>
+                    Description:
+                </RowTitle>
+                <InputDescription title={test.description} setDescription={setDescription} />
+            </Row>
+        </Box>
     )
 }

@@ -97,8 +97,7 @@ const TitleText = styled.div`
     font-family: 'Inter Bold';
     font-size: 1.5rem;
     color: var(--alt-text);
-    text-align: justify;
-    text-justify: inter-word;
+    text-align: start;
     padding-bottom: 5px;
 `
 

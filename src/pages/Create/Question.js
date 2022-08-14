@@ -13,7 +13,6 @@ import { theme } from "../../theme"
 
 const QuestionBox = styled.div`
     width:  70%;
-    min-width: 380px;
     border-radius: 5px;
 
     padding: 5px 15px 5px 15px;
@@ -23,6 +22,10 @@ const QuestionBox = styled.div`
     border: ${({hasError}) => (hasError ? `1px solid var(--error)` : `1px solid var(--main-text)`)};
     background-color: transparent;
     transition: all 0.2s ease-in-out;
+
+    @media (max-width: ${theme.breakpoint}px) {
+        width: 100%;
+    }
 `
 
 const TopRow = styled.div`

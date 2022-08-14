@@ -91,27 +91,12 @@ const SidebarLink = styled(NavLink).attrs({
 `
 
 const IconWrapper = styled.div`
-    ${SidebarLink}:hover & {   
-        -webkit-animation:spin 3s linear infinite;
-        -moz-animation:spin 3s linear infinite;
-        animation:spin 3s linear infinite;
-    }
+    transform: rotate(0deg);
+    transition: transform 999s 999s;
 
-    @-moz-keyframes spin {
-        100% {
-            -moz-transform: rotate(360deg);
-        }
-    }
-    @-webkit-keyframes spin {
-        100% {
-            -webkit-transform: rotate(360deg);
-        }
-    }
-    @keyframes spin {
-        100% {
-            -webkit-transform: rotate(360deg);
-            transform:rotate(360deg);
-        }
+    ${SidebarLink}:hover & {   
+        transform: rotate(300000deg);
+        transition: transform 999s;
     }
 `
 

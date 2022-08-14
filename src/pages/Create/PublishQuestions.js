@@ -361,12 +361,12 @@ export default function PublishQuestions ({ test, setTest, correctAnswers, setCo
                 <InlineNavLink to="/help"> supported markdown file, </InlineNavLink>
                 you can <InlineButton onClick={advanceSection}>skip this step.</InlineButton>
             </SectionSubTitle>
-            <TitleAndDescription 
-                test={test}
-                setTest={setTest}
-                hasError={errors.titleAndDescription}
-            />
-            <QuestionsWrapper key='questionsWrapper'>
+            <QuestionsWrapper>
+                <TitleAndDescription 
+                    test={test}
+                    setTest={setTest}
+                    hasError={errors.titleAndDescription}
+                />
                 {questionBoxes}
                 {
                     getNumberOfQuestions(test) === MAX_QUESTIONS ? 
