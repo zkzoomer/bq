@@ -24,9 +24,6 @@ const SidebarWrapper = styled.aside`
     transition: 0.2s ease-in-out;
     opacity: ${({ isOpen }) => (isOpen ? '100%' : '0%')};
     left: ${({ isOpen }) => (isOpen ? '0%' : '-100%')};
-
-    position: absolute;
-    z-index: 999;
 `
 
 const SidebarTitle = styled.div`
