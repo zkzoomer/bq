@@ -109,7 +109,7 @@ const InputBox = styled.input`
         outline: 0;
         border: 1px solid var(--alt-text);
         box-shadow: 0 0 0 white;
-        margin: 4px 0px 0px 0px;
+        margin: 6px 0px 2px 0px;
     }
 `
 

@@ -75,124 +75,53 @@ export default function WalletModal ({ isOpen, closeModal }) {
 
     // TODO: coinbase wallet sending redirect on mobile, WHY ??????
     return (
-    <Modal isOpen={isOpen} onClose={closeModal} isCentered>
-        <ModalOverlay />
-        treefiddy
-        <ModalContent w="300px">
-            <ModalWrapper>
-                <ModalHeader>Select Wallet</ModalHeader>
-                <ModalButton
-                    onClick={() => {
-                        activate(connectors.injected);
-                        setProvider("injected");
-                        closeModal();
-                        }}
-                >
-                    <ButtonImage
-                        src={require("../../images/mm.png")}
-                        alt="Metamask Logo"
-                    />
-                    <ButtonText>Metamask</ButtonText>
-                </ModalButton>
-                <ModalButton
-                    onClick={() => {
-                        activate(connectors.walletConnect);
-                        setProvider("walletConnect");
-                        closeModal();
-                        }}
-                >
-                    <ButtonImage
-                        src={require("../../images/wc.png")}
-                        alt="Metamask Logo"
-                    />
-                    <ButtonText>Wallet Connect</ButtonText>
-                </ModalButton>
-                <ModalButton
-                    onClick={() => {
-                        activate(connectors.coinbaseWallet);
-                        setProvider("coinbaseWallet");
-                        closeModal();
-                        }}
-                >
-                    <ButtonImage
-                        src={require("../../images/cbw.png")}
-                        alt="Metamask Logo"
-                    />
-                    <ButtonText>Coinbase Wallet</ButtonText>
-                </ModalButton>
-            </ModalWrapper>
-        {/* <ModalHeader>Select Wallet</ModalHeader>
-        <ModalCloseButton
-            _focus={{
-            boxShadow: "none"
-            }}
-        />
-        <ModalBody paddingBottom="1.5rem">
-            <VStack>
-            <Button
-                variant="outline"
-                onClick={() => {
-                activate(connectors.injected);
-                setProvider("injected");
-                closeModal();
-                }}
-                w="100%"
-            >
-                <HStack w="100%" justifyContent="center">
-                <Image
-                    src={require("../../images/mm.png")}
-                    alt="Metamask Logo"
-                    width={25}
-                    height={25}
-                    borderRadius="3px"
-                />
-                <Text>Metamask</Text>
-                </HStack>
-            </Button>
-            <Button
-                variant="outline"
-                onClick={() => {
-                activate(connectors.walletConnect);
-                setProvider("walletConnect");
-                closeModal();
-                }}
-                w="100%"
-            >
-                <HStack w="100%" justifyContent="center">
-                <Image
-                    src={require("../../images/wc.png")}
-                    alt="Wallet Connect Logo"
-                    width={26}
-                    height={26}
-                    borderRadius="3px"
-                />
-                <Text>Wallet Connect</Text>
-                </HStack>
-            </Button>
-            <Button
-                variant="outline"
-                onClick={() => {
-                activate(connectors.coinbaseWallet);
-                setProvider("coinbaseWallet");
-                closeModal();
-                }}
-                w="100%"
-            >
-                <HStack w="100%" justifyContent="center">
-                <Image
-                    src={require("../../images/cbw.png")}
-                    alt="Coinbase Wallet Logo"
-                    width={25}
-                    height={25}
-                    borderRadius="3px"
-                />
-                <Text>Coinbase Wallet</Text>
-                </HStack>
-            </Button>
-            </VStack>
-        </ModalBody> */}
-        </ModalContent>
-    </Modal>
+        <Modal isOpen={isOpen} onClose={closeModal} isCentered>
+            <ModalOverlay />
+            <ModalContent w="300px">
+                <ModalWrapper>
+                    <ModalHeader>Select Wallet</ModalHeader>
+                    <ModalButton
+                        onClick={() => {
+                            activate(connectors.injected);
+                            setProvider("injected");
+                            closeModal();
+                            }}
+                    >
+                        <ButtonImage
+                            src={require("../../images/mm.png")}
+                            alt="Metamask Logo"
+                        />
+                        <ButtonText>Metamask</ButtonText>
+                    </ModalButton>
+                    <ModalButton
+                        onClick={() => {
+                            activate(connectors.walletConnect);
+                            setProvider("walletConnect");
+                            closeModal();
+                            }}
+                    >
+                        <ButtonImage
+                            src={require("../../images/wc.png")}
+                            alt="Metamask Logo"
+                        />
+                        <ButtonText>Wallet Connect</ButtonText>
+                    </ModalButton>
+                    <ModalButton
+                        onClick={() => {
+                            activate(connectors.coinbaseWallet);
+                            setProvider("coinbaseWallet");
+                            closeModal();
+                            }}
+                    >
+                        <ButtonImage
+                            src={require("../../images/cbw.png")}
+                            alt="Metamask Logo"
+                        />
+                        <ButtonText>Coinbase Wallet</ButtonText>
+                    </ModalButton>
+                </ModalWrapper>
+            </ModalContent>
+        </Modal>
     );
 }
   

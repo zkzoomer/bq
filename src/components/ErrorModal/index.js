@@ -1,22 +1,24 @@
 import React, { useRef, useEffect, useCallback } from 'react';
-import { useSpring, animated } from 'react-spring';
 import styled from 'styled-components';
 import { MdClose } from 'react-icons/md';
 
 const Background = styled.div`
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.25);
     position: fixed;
     z-index: 100;
-`;
+
+    transition: background-color 0.2s ease-in-out;
+    display: block;
+    top: ${({ showModal }) => (showModal ? '0%' : '-100%')};
+    background-color: ${({ showModal }) => (showModal ? 'rgba(0, 0, 0, 0.25)' : 'transparent')};
+`
 
 const ModalWrapper = styled.div`
     margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
     width: 80%;
-    height: 100%;
     padding: 10px 0px 10px 0px;
     max-width: 700px;
     background-color: var(--main-background);
@@ -30,6 +32,10 @@ const ModalWrapper = styled.div`
 
     display: flex;
     align-items: center;
+
+    
+    transition: 0.2s ease-in-out;
+    top: ${({ showModal }) => (showModal ? '0%' : '-100%')};
 `;
 
 const ModalContent = styled.div`
@@ -85,14 +91,6 @@ export default function ErrorModal ({ errorMessage, closeModal }) {
         return errorMessage.length !== 0
     }
 
-    const animation = useSpring({
-        config: {
-            duration: 2500
-        },
-        opacity: !!showModal() ? 1 : 0,
-        transform: !!showModal() ? `translateY(0%)` : `translateY(-100%)`
-    });
-
     const backgroundCloseModal = e => {
         if (modalRef.current === e.target) {
         closeModal();
@@ -117,23 +115,17 @@ export default function ErrorModal ({ errorMessage, closeModal }) {
     );
 
     return (
-        <>
-        {showModal() ? (
-            <Background onClick={backgroundCloseModal} ref={modalRef}>
-            <animated.div style={animation}>
-                <ModalWrapper showModal={showModal()}>
-                    <ModalContent>
-                        <ModalText>{errorMessage[0]}</ModalText>
-                        <ModalSubtext>{errorMessage[1]}</ModalSubtext>
-                    </ModalContent>
-                    <CloseModalButton
-                        aria-label='Close modal'
-                        onClick={closeModal}
-                    />
-                </ModalWrapper>
-            </animated.div>
-            </Background>
-        ) : null}
-        </>
+        <Background showModal={showModal()} onClick={backgroundCloseModal} ref={modalRef}>
+            <ModalWrapper showModal={showModal()}>
+                <ModalContent>
+                    <ModalText>{errorMessage[0]}</ModalText>
+                    <ModalSubtext>{errorMessage[1]}</ModalSubtext>
+                </ModalContent>
+                <CloseModalButton
+                    aria-label='Close modal'
+                    onClick={closeModal}
+                />
+            </ModalWrapper>
+        </Background>
     );
 };
