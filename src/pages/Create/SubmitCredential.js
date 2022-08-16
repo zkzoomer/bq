@@ -191,7 +191,7 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
         
         // TODO: be able to set time limit on a calendar
         if (name === 'timeLimit') {
-            const isValidTime = /^[0-9]{0,10}$/.test(value) && value > moment().unix()
+            const isValidTime = (/^[0-9]{0,10}$/.test(value) && value > moment().unix()) || value === ""
             return !isValidTime ? 
                 'Invalid time limit'
             :
