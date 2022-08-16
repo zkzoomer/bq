@@ -1,19 +1,21 @@
 /* global BigInt */
 import { useEffect, useState } from "react"
+import styled from "styled-components"
 import { useWeb3React } from '@web3-react/core';
 import { Contract } from "@ethersproject/contracts";
 import { parseEther }from "@ethersproject/units"
 import { useSelector } from "react-redux"
 import { NavLink } from "react-router-dom"
-import styled from "styled-components"
-import 'bootstrap/dist/css/bootstrap.css';
+import moment from 'moment';
 import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.css';
 
 import { SubmitButton } from "../../components/Button"
 import { isValidAddress } from "../../hooks/utils"
 import { DEPLOYED_CONTRACTS } from "../../constants/chains";
 import { MAX_UINT32, ZERO_ADDRESS } from "../../constants/values";
 import { theme } from "../../theme";
+import TimeLimitInput from "./TimeLimitInput";
 
 const SectionTitle = styled.div`
     font-size: 1.7rem;
@@ -64,7 +66,7 @@ const PrizeInputWrapper = styled.div`
     text-justify: inter-word;
 `
 
-const InputWrapper = styled.div`
+export const InputWrapper = styled.div`
     padding: 0px 10px 0px 10px;
     height: 85px;
     width: 100%;
@@ -72,7 +74,7 @@ const InputWrapper = styled.div`
     flex-direction: column;
 `
 
-const InputName = styled.div`
+export const InputName = styled.div`
     font-family: 'Inter Bold';
     text-align: justify;
     text-justify: inter-word;
@@ -80,6 +82,7 @@ const InputName = styled.div`
 
 const InputBox = styled.input`
     width: 100%;
+    height: 33px;
     border-radius: 5px;
     padding: 3px 0 3px 10px;
     margin: 4px 0px 4px 0px;
@@ -102,7 +105,7 @@ const InputBox = styled.input`
     }
 `
 
-const ErrorText = styled.div`
+export const ErrorText = styled.div`
     font-family: 'Inter ExtraLightItalic';
     font-size: 0.8rem;
     font-weight: 800;
@@ -160,20 +163,20 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
         { name: 'testerURI', placeholder: "Upload your test to IPFS and link it here", label: (<><InlineNavLink to='/help'>Supported markdown</InlineNavLink> tester URI</>) },
         { name: 'solutionHash', placeholder: "Solution hash of your multiple choice test", label: 'Answers tree root'},
         { name: 'requiredPass', placeholder: "Leave empty if not needed", label: 'NFT pass required to solve' },
-        { name: 'timeLimit', placeholder: "Leave empty for unlimited", label: 'Test deadline' },
     ]
 
     //returns an error string, empty if validated
     const validate = ({name, value}) => {
         // required pass support for `balanceOf` gets checked inside the smart contract itself
+        // TODO: check its valid contract on frontend too
         if (name === 'requiredPass') {
-            return (!isValidAddress(value) && !!value) ? 'Not a valid contract address' : ''
+            return (!isValidAddress(value) && !!value) ? 'Invalid contract address' : ''
         } 
 
         if (name === 'solutionHash') {
             const solutionHashRegex = /^[0-9]{70,78}$/
             return (!solutionHashRegex.test(value) || BigInt(value) >= BigInt(2**256 - 1)) ? 
-                'Not a valid solution hash'
+                'Invalid solution hash'
             :
                 ''
         }
@@ -188,7 +191,7 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
         
         // TODO: be able to set time limit on a calendar
         if (name === 'timeLimit') {
-            const isValidTime = /^[0-9]{0,10}$/.test(value)
+            const isValidTime = /^[0-9]{0,10}$/.test(value) && value > moment().unix()
             return !isValidTime ? 
                 'Invalid time limit'
             :
@@ -304,6 +307,12 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
             <SubmitBox>
                 <SubmitWrapper>
                     {inputItems}
+                    <TimeLimitInput
+                        value={submission.timeLimit.value}
+                        error={submission.timeLimit.error}
+                        setValue={(_value) => { setSubmission( prevState => ({ ...prevState, timeLimit: { value: _value, error: "" } }) ) }} /*{(_value) => {console.log('setting value to: ', _value)}}*/ 
+                        setError={(_error) => { setSubmission( prevState => ({ ...prevState, timeLimit: { value: "", error: _error } }) ) }}
+                    />
                 </SubmitWrapper>
                 <SpecialInputRow>
                     <InputWrapper>
