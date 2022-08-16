@@ -1,5 +1,6 @@
 /* TODO: define all the styles to support a rich markdown document, w math too */
 
+
 .reactMarkDown {
   display: flex;
   flex-direction: column;
@@ -15,17 +16,894 @@
 }
 
 .reactMarkDown h1 {
-  font-size: 2rem;
+  margin: .67em 0;
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 2em;
+  border-bottom: 1px solid var(--divider);
 }
 
-.reactMarkDown ul {
+.reactMarkDown mark {
+  background-color: var(--main-background);
+  color: var(--main-text);
+}
+
+.reactMarkDown small {
+  font-size: 90%;
+}
+
+.reactMarkDown sub,
+.reactMarkDown sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.reactMarkDown sub {
+    bottom: -0.25em;
+}
+
+.reactMarkDown sup {
+    top: -0.5em;
+}
+
+.reactMarkDown img {
+    border-style: none;
+    max-width: 100%;
+    box-sizing: content-box;
+    background-color: var(--main-background);
+}
+
+.reactMarkDown code,
+.reactMarkDown kbd,
+.reactMarkDown pre,
+.reactMarkDown samp {
+    font-family: monospace,monospace;
+    font-size: 1em;
+}
+
+.reactMarkDown figure {
+    margin: 1em 40px;
+}
+
+.reactMarkDown hr {
+    box-sizing: content-box;
+    overflow: hidden;
+    background: transparent;
+    border-bottom: 1px solid var(--divider);
+    height: .25em;
+    padding: 0;
+    margin: 24px 0;
+    background-color: var(--divider);
+    border: 0;
+}
+
+.reactMarkDown input {
+  font: inherit;
+  margin: 0;
+  overflow: visible;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.reactMarkDown [type=button],
+.reactMarkDown [type=reset],
+.reactMarkDown [type=submit] {
+  -webkit-appearance: button;
+}
+
+.reactMarkDown [type=button]::-moz-focus-inner,
+.reactMarkDown [type=reset]::-moz-focus-inner,
+.reactMarkDown [type=submit]::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+.reactMarkDown [type=button]:-moz-focusring,
+.reactMarkDown [type=reset]:-moz-focusring,
+.reactMarkDown [type=submit]:-moz-focusring {
+    outline: 1px dotted ButtonText;
+}
+
+.reactMarkDown [type=checkbox],
+.reactMarkDown [type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.reactMarkDown [type=number]::-webkit-inner-spin-button,
+.reactMarkDown [type=number]::-webkit-outer-spin-button {
+    height: auto;
+}
+
+.reactMarkDown [type=search] {
+    -webkit-appearance: textfield;
+    outline-offset: -2px;
+}
+
+.reactMarkDown [type=search]::-webkit-search-cancel-button,
+.reactMarkDown [type=search]::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+
+.reactMarkDown ::-webkit-input-placeholder {
+  color: inherit;
+  opacity: .54;
+}
+
+.reactMarkDown ::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+.reactMarkDown a:hover {
+  text-decoration: underline;
+}
+
+.reactMarkDown hr::before {
+  display: table;
+  content: "";
+}
+
+.reactMarkDown hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.reactMarkDown table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  display: block;
+  width: max-content;
+  width: 100%;
+  overflow: auto;
+}
+
+.reactMarkDown td,
+.reactMarkDown th {
+  padding: 0;
+}
+
+.reactMarkDown details summary {
+  cursor: pointer;
+}
+
+.reactMarkDown details:not([open])>*:not(summary) {
+  display: none !important;
+}
+
+.reactMarkDown kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  line-height: 10px;
+  color: #24292f;
+  vertical-align: middle;
+  background-color: #f6f8fa;
+  border: solid 1px rgba(175,184,193,0.2);
+  border-bottom-color: rgba(175,184,193,0.2);
+  border-radius: 6px;
+  box-shadow: inset 0 -1px 0 rgba(175,184,193,0.2);
+}
+
+.reactMarkDown h1,
+.reactMarkDown h2,
+.reactMarkDown h3,
+.reactMarkDown h4,
+.reactMarkDown h5,
+.reactMarkDown h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+  width: 100%;
+  text-align: left;
+}
+
+.reactMarkDown h2 {
+  font-weight: 600;
+  padding-bottom: .3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid hsla(210,18%,87%,1);
+  text-align: left;
+}
+
+.reactMarkDown h3 {
+  font-weight: 600;
+  font-size: 1.25em;
+}
+
+.reactMarkDown h4 {
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.reactMarkDown h5 {
+  font-weight: 600;
+  font-size: .875em;
+}
+
+.reactMarkDown h6 {
+  font-weight: 600;
+  font-size: .85em;
+  color: #57606a;
+}
+
+.reactMarkDown p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.reactMarkDown blockquote {
+  width: 100%;
+  margin: 0;
+  padding: 0 1em;
+  color: #57606a;
+  border-left: .25em solid #d0d7de;
+}
+
+.reactMarkDown ul,
+.reactMarkDown ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 2em;
+}
+
+.reactMarkDown ol ol,
+.reactMarkDown ul ol {
+  list-style-type: lower-roman;
+}
+
+.reactMarkDown ul ul ol,
+.reactMarkDown ul ol ol,
+.reactMarkDown ol ul ol,
+.reactMarkDown ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.reactMarkDown dd {
+  margin-left: 0;
+}
+
+.reactMarkDown tt,
+.reactMarkDown code {
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+  width: 100% !important;
+}
+
+.reactMarkDown pre {
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-family: ui-monospace,SFMono-Regular,SF Mono,Menlo,Consolas,Liberation Mono,monospace;
+  font-size: 12px;
+  word-wrap: normal;
+}
+
+.reactMarkDown .octicon {
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.reactMarkDown ::placeholder {
+  color: #6e7781;
+  opacity: 1;
+}
+
+.reactMarkDown input::-webkit-outer-spin-button,
+.reactMarkDown input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.reactMarkDown .pl-c {
+  color: #6e7781;
+}
+
+.reactMarkDown .pl-c1,
+.reactMarkDown .pl-s .pl-v {
+  color: #0550ae;
+}
+
+.reactMarkDown .pl-e,
+.reactMarkDown .pl-en {
+  color: #8250df;
+}
+
+.reactMarkDown .pl-smi,
+.reactMarkDown .pl-s .pl-s1 {
+  color: #24292f;
+}
+
+.reactMarkDown .pl-ent {
+  color: #116329;
+}
+
+.reactMarkDown .pl-k {
+  color: #cf222e;
+}
+
+.reactMarkDown .pl-s,
+.reactMarkDown .pl-pds,
+.reactMarkDown .pl-s .pl-pse .pl-s1,
+.reactMarkDown .pl-sr,
+.reactMarkDown .pl-sr .pl-cce,
+.reactMarkDown .pl-sr .pl-sre,
+.reactMarkDown .pl-sr .pl-sra {
+  color: #0a3069;
+}
+
+.reactMarkDown .pl-v,
+.reactMarkDown .pl-smw {
+  color: #953800;
+}
+
+.reactMarkDown .pl-bu {
+  color: #82071e;
+}
+
+.reactMarkDown .pl-ii {
+  color: #f6f8fa;
+  background-color: #82071e;
+}
+
+.reactMarkDown .pl-c2 {
+  color: #f6f8fa;
+  background-color: #cf222e;
+}
+
+.reactMarkDown .pl-sr .pl-cce {
+  font-weight: bold;
+  color: #116329;
+}
+
+.reactMarkDown .pl-ml {
+  color: #3b2300;
+}
+
+.reactMarkDown .pl-mh,
+.reactMarkDown .pl-mh .pl-en,
+.reactMarkDown .pl-ms {
+  font-weight: bold;
+  color: #0550ae;
+}
+
+.reactMarkDown .pl-mi {
+  font-style: italic;
+  color: #24292f;
+}
+
+.reactMarkDown .pl-mb {
+  font-weight: bold;
+  color: #24292f;
+}
+
+.reactMarkDown .pl-md {
+  color: #82071e;
+  background-color: #FFEBE9;
+}
+
+.reactMarkDown .pl-mi1 {
+  color: #116329;
+  background-color: #dafbe1;
+}
+
+.reactMarkDown .pl-mc {
+  color: #953800;
+  background-color: #ffd8b5;
+}
+
+.reactMarkDown .pl-mi2 {
+  color: #eaeef2;
+  background-color: #0550ae;
+}
+
+.reactMarkDown .pl-mdr {
+  font-weight: bold;
+  color: #8250df;
+}
+
+.reactMarkDown .pl-ba {
+  color: #57606a;
+}
+
+.reactMarkDown .pl-sg {
+  color: #8c959f;
+}
+
+.reactMarkDown .pl-corl {
+  text-decoration: underline;
+  color: #0a3069;
+}
+
+.reactMarkDown [data-catalyst] {
+  display: block;
+}
+
+.reactMarkDown g-emoji {
+  font-family: "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 1em;
+  font-style: normal !important;
+  font-weight: 400;
+  line-height: 1;
+  vertical-align: -0.075em;
+}
+
+.reactMarkDown g-emoji img {
+  width: 1em;
+  height: 1em;
+}
+
+.reactMarkDown::before {
+  display: table;
+  content: "";
+}
+
+.reactMarkDown::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.reactMarkDown>*:first-child {
+  margin-top: 0 !important;
+}
+
+.reactMarkDown>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.reactMarkDown a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.reactMarkDown .absent {
+  color: #cf222e;
+}
+
+.reactMarkDown .anchor {
+  float: left;
+  padding-right: 4px;
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.reactMarkDown .anchor:focus {
+  outline: none;
+}
+
+.reactMarkDown p,
+.reactMarkDown blockquote,
+.reactMarkDown ul,
+.reactMarkDown ol,
+.reactMarkDown dl,
+.reactMarkDown table,
+.reactMarkDown pre,
+.reactMarkDown details {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.reactMarkDown blockquote>:first-child {
+  margin-top: 0;
+}
+
+.reactMarkDown blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.reactMarkDown sup>a::before {
+  content: "[";
+}
+
+.reactMarkDown sup>a::after {
+  content: "]";
+}
+
+.reactMarkDown h1 .octicon-link,
+.reactMarkDown h2 .octicon-link,
+.reactMarkDown h3 .octicon-link,
+.reactMarkDown h4 .octicon-link,
+.reactMarkDown h5 .octicon-link,
+.reactMarkDown h6 .octicon-link {
+  color: #24292f;
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.reactMarkDown h1:hover .anchor,
+.reactMarkDown h2:hover .anchor,
+.reactMarkDown h3:hover .anchor,
+.reactMarkDown h4:hover .anchor,
+.reactMarkDown h5:hover .anchor,
+.reactMarkDown h6:hover .anchor {
+  text-decoration: none;
+}
+
+.reactMarkDown h1:hover .anchor .octicon-link,
+.reactMarkDown h2:hover .anchor .octicon-link,
+.reactMarkDown h3:hover .anchor .octicon-link,
+.reactMarkDown h4:hover .anchor .octicon-link,
+.reactMarkDown h5:hover .anchor .octicon-link,
+.reactMarkDown h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.reactMarkDown h1 tt,
+.reactMarkDown h1 code,
+.reactMarkDown h2 tt,
+.reactMarkDown h2 code,
+.reactMarkDown h3 tt,
+.reactMarkDown h3 code,
+.reactMarkDown h4 tt,
+.reactMarkDown h4 code,
+.reactMarkDown h5 tt,
+.reactMarkDown h5 code,
+.reactMarkDown h6 tt,
+.reactMarkDown h6 code {
+  width: 100%;
+  padding: 0 .2em;
+  font-size: inherit;
+}
+
+.reactMarkDown ul.no-list,
+.reactMarkDown ol.no-list {
+  padding: 0;
+  list-style-type: none;
+}
+
+.reactMarkDown ol[type="1"] {
+  list-style-type: decimal;
+}
+
+.reactMarkDown ol[type=a] {
+  list-style-type: lower-alpha;
+}
+
+.reactMarkDown ol[type=i] {
+  list-style-type: lower-roman;
+}
+
+.reactMarkDown div>ol:not([type]) {
+  list-style-type: decimal;
+}
+
+.reactMarkDown li>p {
+  margin-top: 16px;
+}
+
+.reactMarkDown li+li {
+  width: 100%;
+  margin-top: .25em;
+}
+
+.reactMarkDown dl {
+  padding: 0;
+}
+
+.reactMarkDown dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.reactMarkDown dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.reactMarkDown table th {
+  font-weight: 600;
+}
+
+.reactMarkDown table th,
+.reactMarkDown table td {
+  padding: 6px 13px;
+  border: 1px solid #d0d7de;
+}
+
+.reactMarkDown table tr {
+  background-color: #ffffff;
+  border-top: 1px solid hsla(210,18%,87%,1);
+}
+
+.reactMarkDown table tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+
+.reactMarkDown table img {
+  background-color: transparent;
+}
+
+.reactMarkDown img[align=right] {
+  padding-left: 20px;
+}
+
+.reactMarkDown img[align=left] {
+  padding-right: 20px;
+}
+
+.reactMarkDown .emoji {
+  max-width: none;
+  vertical-align: text-top;
+  background-color: transparent;
+}
+
+.reactMarkDown span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+.reactMarkDown span.frame>span {
+  display: block;
+  float: left;
+  width: auto;
+  padding: 7px;
+  margin: 13px 0 0;
+  overflow: hidden;
+  border: 1px solid #d0d7de;
+}
+
+.reactMarkDown span.frame span img {
+  display: block;
+  float: left;
+}
+
+.reactMarkDown span.frame span span {
+  display: block;
+  padding: 5px 0 0;
+  clear: both;
+  color: #24292f;
+}
+
+.reactMarkDown span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.reactMarkDown span.align-center>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.reactMarkDown span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reactMarkDown span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+.reactMarkDown span.align-right>span {
+  display: block;
+  margin: 13px 0 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.reactMarkDown span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+.reactMarkDown span.float-left {
+  display: block;
+  float: left;
+  margin-right: 13px;
+  overflow: hidden;
+}
+
+.reactMarkDown span.float-left span {
+  margin: 13px 0 0;
+}
+
+.reactMarkDown span.float-right {
+  display: block;
+  float: right;
+  margin-left: 13px;
+  overflow: hidden;
+}
+
+.reactMarkDown span.float-right>span {
+  display: block;
+  margin: 13px auto 0;
+  overflow: hidden;
+  text-align: right;
+}
+
+.reactMarkDown code,
+.reactMarkDown tt {
+  padding: .2em .4em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(175,184,193,0.2);
+  border-radius: 6px;
+}
+
+.reactMarkDown code br,
+.reactMarkDown tt br {
+  display: none;
+}
+
+.reactMarkDown del code {
+  text-decoration: inherit;
+}
+
+.reactMarkDown pre code {
+  font-size: 100%;
+}
+
+.reactMarkDown pre>code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.reactMarkDown .highlight {
+  margin-bottom: 16px;
+}
+
+.reactMarkDown .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.reactMarkDown .highlight pre,
+.reactMarkDown pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+}
+
+.reactMarkDown pre code,
+.reactMarkDown pre tt {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.reactMarkDown .csv-data td,
+.reactMarkDown .csv-data th {
+  padding: 5px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.reactMarkDown .csv-data .blob-num {
+  padding: 10px 8px 9px;
+  text-align: right;
+  background: #ffffff;
+  border: 0;
+}
+
+.reactMarkDown .csv-data tr {
+  border-top: 0;
+}
+
+.reactMarkDown .csv-data th {
+  font-weight: 600;
+  background: #f6f8fa;
+  border-top: 0;
+}
+
+.reactMarkDown .footnotes {
+  font-size: 12px;
+  color: #57606a;
+  border-top: 1px solid #d0d7de;
+}
+
+.reactMarkDown .footnotes ol {
+  padding-left: 16px;
+}
+
+.reactMarkDown .footnotes li {
+  width: 100%;
+  position: relative;
+}
+
+.reactMarkDown .footnotes li:target::before {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  left: -24px;
+  pointer-events: none;
+  content: "";
+  border: 2px solid #0969da;
+  border-radius: 6px;
+}
+
+.reactMarkDown .footnotes li:target {
+  color: #24292f;
+}
+
+.reactMarkDown .footnotes .data-footnote-backref g-emoji {
+  font-family: monospace;
+}
+
+.reactMarkDown .task-list-item {
+  list-style-type: none;
+}
+
+.reactMarkDown .task-list-item label {
+  font-weight: 400;
+}
+
+.reactMarkDown .task-list-item.enabled label {
+  cursor: pointer;
+}
+
+.reactMarkDown .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.reactMarkDown .task-list-item .handle {
+  display: none;
+}
+
+.reactMarkDown .task-list-item-checkbox {
+  margin: 0 .2em .25em -1.6em;
+  vertical-align: middle;
+}
+
+.reactMarkDown .contains-task-list:dir(rtl) .task-list-item-checkbox {
+  width: 100%;
+  justify-content: start;
+  margin: 0 -1.6em .25em .2em;
+}
+
+.reactMarkDown ::-webkit-calendar-picker-indicator {
+  filter: invert(50%);
+}
+
+.reactMarkDown ul ul,
+.reactMarkDown ul ol,
+.reactMarkDown ol ol,
+.reactMarkDown ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
   margin-top: 1em;
   margin-bottom: 1em;
   list-style: disc outside none;
+  width: 100% !important;
+  justify-content: start;
 }
 
 .reactMarkDown ul li {
   margin-left: 2em;
   display: list-item;
+  width: 100% !important;
+  justify-content: start;
   text-align: -webkit-match-parent;
 }
