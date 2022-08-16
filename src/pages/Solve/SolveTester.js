@@ -123,7 +123,8 @@ export default function SolveTester ({ tokenStats, tester }) {
                 publicSignals
             )
         } catch (err) {
-            console.log(err)
+            dispatch(setError(['Wrong solution!', 'Transaction could not be sent because your solution is not valid']))
+            dispatch(setModal('error'))
             setButtonState( prevState => ({
                 ...prevState,
                 awaiting: false
