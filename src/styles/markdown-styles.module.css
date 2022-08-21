@@ -13,6 +13,7 @@
   width: 100%;
   text-align: justify !important;
   text-justify: inter-word !important;
+  word-wrap: break-word;
 }
 
 .reactMarkDown h1 {
@@ -235,6 +236,9 @@
 .reactMarkDown p {
   margin-top: 0;
   margin-bottom: 10px;
+  max-width: 100%;
+  line-break: anywhere;
+  overflow-wrap: break-word !important;
 }
 
 .reactMarkDown blockquote {
@@ -490,6 +494,7 @@
 .reactMarkDown details {
   margin-top: 0;
   margin-bottom: 16px;
+  word-wrap: break-word;
 }
 
 .reactMarkDown blockquote>:first-child {

@@ -82,8 +82,9 @@ const RenderQuestionWrapper = styled.div`
 
 const RenderAnswerWrapper = styled.div`
     height: 100%;
-    width: 100%;
+    max-width: 100%;
     padding: 0px 10px 25px 10px;
+    word-wrap: break-word;
 `
 
 const RenderQuestionElement = ({ testQuestion }) => {
