@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    selectedChain: 'evmos_testnet', 
+    selectedChain: 'polygon_mumbai', 
     correctChain: false,
 }
 
