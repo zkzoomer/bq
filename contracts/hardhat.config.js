@@ -15,6 +15,12 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic
       }
+    },
+    evmos_testnet: {
+      url: 'https://eth.bd.evmos.dev:8545	',  // RPC used just for deploying
+      accounts: {
+        mnemonic: mnemonic
+      }
     }
   },
   gasReporter: {

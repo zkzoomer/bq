@@ -83,9 +83,6 @@ const Image = styled.img`
     }
 `
 
-const testerLink = DEPLOYED_CONTRACTS_ON_EXPLORER[80001].TesterCreator
-const credentialLink = DEPLOYED_CONTRACTS_ON_EXPLORER[80001].Credentials
-
 export const accordionElements = [
     {
         name: "How do I gain a credential?",
@@ -102,8 +99,7 @@ export const accordionElements = [
         name: "How do I check my credentials?",
         content: (
             <ContentText>
-                When you receive a credential, you get sent a certificate as a 
-                <InlineLink href={testerLink} target='_blank' aria_label='Polygonscan'> non-transferable NFT </InlineLink>
+                When you receive a credential, you get sent a certificate as a non-transferable NFT
                 validating your skills. You can look at all your gained credentials inside your 
                 <InlineNavLink to="/profile"> Profile </InlineNavLink> page, as well as the credentials you created.
             </ContentText>
@@ -122,8 +118,7 @@ export const accordionElements = [
         name: "How many questions can a credential have?",
         content: (
             <ContentText>
-                <InlineLink href={testerLink} target='_blank' aria_label='Polygonscan'>Block Qualified Testers </InlineLink> support a 
-                maximum of {MAX_QUESTIONS} questions, each with a maximum of {MAX_ANSWERS} answers.
+                Block Qualified Testers support a maximum of {MAX_QUESTIONS} questions, each with a maximum of {MAX_ANSWERS} answers.
                 <br />
                 If we do some math, we can see that for a simple multiple choice test with 10 questions, each with 4 possible answers, 
                 you would have a<span style={{fontWeight:800, fontFamily: 'Inter ExtraLight'}}> one in a million chance </span>
@@ -136,8 +131,7 @@ export const accordionElements = [
         name: "How can I verify a credential?",
         content: (
             <ContentText>
-                Each non-transferable Credential NFT is linked to its corresponding 
-                <InlineLink href={credentialLink} target='_blank' aria_label='Polygonscan'> non-transferable Tester NFT. </InlineLink>
+                Each non-transferable Credential NFT is linked to its corresponding  non-transferable Tester NFT.
                 The only way to gain a credential is to answer all of its questions correctly. Thanks to ZK-SNARKS, these answers get
                 posted privately, so you can be sure that credentials cannot be attained by copying other's answers.
             </ContentText>

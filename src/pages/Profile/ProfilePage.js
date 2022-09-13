@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react"
+import { useSelector } from 'react-redux'
 import { ethers } from "ethers"; 
 import styled from "styled-components"
 import { FaTrophy, FaPencilAlt, FaExternalLinkAlt } from "react-icons/fa"
@@ -6,7 +7,7 @@ import Jazzicon from "@metamask/jazzicon";
 import Spinner from 'react-bootstrap/Spinner';
 
 import ProfileGallery from './ProfileGallery'
-import { DEPLOYED_CONTRACTS } from "../../constants/chains"
+import { DEPLOYED_CONTRACTS, PROVIDERS } from "../../constants/chains"
 import { GainedButton, OwnedButton } from "../../components/Button"
 import { theme } from "../../theme"
 import { truncateAddress } from "../../hooks/utils"
@@ -144,7 +145,9 @@ const ButtonWrapper = styled.div`
 `
 
 export function ProfilePage ({ address }) {
-    const [page, setPage] = useState('gained')
+    const selectedChain = useSelector(state => state.chain.selectedChain);
+
+    const [page, setPage] = useState('owned')
     const [stats, setStats] = useState({ gained: null, owned: null })
     const [cards, setCards] = useState({
         gained: {
@@ -162,16 +165,34 @@ export function ProfilePage ({ address }) {
     })
 
     const testerContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].TesterCreator,
+        DEPLOYED_CONTRACTS[selectedChain].TesterCreator,
         require('../../abis/TesterCreator.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+        PROVIDERS[selectedChain]
     )
 
     const credentialsContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].Credentials,
+        DEPLOYED_CONTRACTS[selectedChain].Credentials,
         require('../../abis/Credentials.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+        PROVIDERS[selectedChain]
     )
+
+    useEffect(() => {
+        setStats({ gained: null, owned: null })
+        setCards({
+            gained: {
+                totalSupply: null,
+                loadedCards: 0,
+                cardsToLoad: 0,
+                testerCards: []
+            }, 
+            owned: {
+                totalSupply: null,
+                loadedCards: 0,
+                cardsToLoad: 0,
+                testerCards: []
+            }
+        })
+    }, [selectedChain])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -194,8 +215,8 @@ export function ProfilePage ({ address }) {
                 }
             }))
         }
-        fetchData()
-    }, [address])
+        if (stats.gained === null) fetchData();
+    }, [address, stats])
 
     function Identicon () {
         const ref = useRef();

@@ -1,20 +1,19 @@
 import { useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import useScrollPosition from '@react-hook/window-scroll'
 import { useWeb3React } from '@web3-react/core';
-import { useSelector } from "react-redux"
 import Jazzicon from "@metamask/jazzicon";
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 
 import { toHex, truncateAddress } from '../../hooks/utils';
-import { ALL_SUPPORTED_CHAIN_IDS, CHAIN_IDS_NETWORK_PARAMETERS } from '../../constants/chains';
-import { setModal } from '../../state/modal/reducer';
 import { setCorrectChain } from '../../state/chain/reducer';
+import { ALL_SUPPORTED_CHAIN_IDS, CHAIN_IDS_NETWORK_PARAMETERS, CHAIN_IDS_TO_NAMES } from '../../constants/chains';
+import { setModal } from '../../state/modal/reducer';
 import { setIsOpen } from '../../state/sidebar/reducer';
 import { theme } from '../../theme';
 import { connectors } from '../WalletModal/connectors';
-
+import ChainSelector from './chainSelector';
 
 const HeaderWrapper = styled.div`
     position: sticky;
@@ -79,25 +78,33 @@ const Connected = css`
     }
 `
 
+const ButtonsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding-right: 10px;
+`
+
 const ConnectButton = styled.button`
+    width: 150px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center; 
 
-    width: 150px;
-    border-radius: 5px;
-    margin-right: 10px;
     padding: 5px 10px;
+    margin: 4px 0px 4px 10px;
+
+    border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
     transition: box-shadow, margin 0.2s ease-in-out;
-
-    margin: 4px 10px 4px 10px;
+    
     box-shadow: 2px 2px 2px 1px var(--main-text);
     border: 1px solid var(--main-text);
     &:hover {
         box-shadow: 0 0 0 white;
-        margin: 6px 10px 2px 10px;
+        margin: 6px 0px 2px 10px;
     }
 
     ${(props) => props.wrongChain ? WrongChain : RightChain}
@@ -122,6 +129,7 @@ const SidebarButton = styled.button`
 `
 
 export default function Header ({ onOpen }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
     const correctChain = useSelector(state => state.chain.correctChain);
     const sidebarIsOpen = useSelector(state => state.sidebar.isOpen);
 
@@ -144,12 +152,12 @@ export default function Header ({ onOpen }) {
     }, []);
 
     useEffect(() => {
-        if (ALL_SUPPORTED_CHAIN_IDS.includes(chainId)) {
+        if (CHAIN_IDS_TO_NAMES[chainId] === selectedChain) {
             dispatch(setCorrectChain(true))
         } else {
             dispatch(setCorrectChain(false))
         }
-    }, [chainId])
+    }, [chainId, selectedChain])
 
     const handleConnect = () => {
         onOpen()
@@ -167,18 +175,17 @@ export default function Header ({ onOpen }) {
     }
 
     const switchNetwork = async () => {
-        const network = ALL_SUPPORTED_CHAIN_IDS[0]
         try {
           await library.provider.request({
             method: "wallet_switchEthereumChain",
-            params: [{ chainId: toHex(80001) }]
+            params: [{ chainId: CHAIN_IDS_NETWORK_PARAMETERS[selectedChain].chainId }]
           });
         } catch (switchError) {
           if (switchError.code === 4902) {
             try {
               await library.provider.request({
                 method: "wallet_addEthereumChain",
-                params: [CHAIN_IDS_NETWORK_PARAMETERS[toHex(network)]]
+                params: [CHAIN_IDS_NETWORK_PARAMETERS[selectedChain]]
               });
             } catch (error) {
               console.log(error);
@@ -217,20 +224,29 @@ export default function Header ({ onOpen }) {
         )
     }
 
-    function ButtonComponent () {
+    function ButtonsComponent () {
         if (active) {
             if (correctChain) {
                 return(
-                    <ConnectButton onClick={handleDisconnect} connected={true}><Identicon />&nbsp;&nbsp;{ truncateAddress(account) }</ConnectButton>
+                    <ButtonsWrapper>
+                        <ChainSelector />
+                        <ConnectButton onClick={handleDisconnect} connected={true}><Identicon />&nbsp;&nbsp;{ truncateAddress(account) }</ConnectButton>
+                    </ButtonsWrapper>
                 )
             } else {  // Uncorrect chain, prompt the change
                 return(
-                    <ConnectButton onClick={switchNetwork} wrongChain={true}>Change Network</ConnectButton>
+                    <ButtonsWrapper>
+                        <ChainSelector />
+                        <ConnectButton onClick={switchNetwork} wrongChain={true}>Change Network</ConnectButton>
+                    </ButtonsWrapper>
                 )
             }
         } else {  
             return (
-                <ConnectButton onClick={handleConnect}>Connect Wallet</ConnectButton>
+                <ButtonsWrapper>
+                    <ChainSelector />
+                    <ConnectButton onClick={handleConnect}>Connect Wallet</ConnectButton>
+                </ButtonsWrapper>
             )
         }
     }
@@ -243,7 +259,7 @@ export default function Header ({ onOpen }) {
                     bq
                 </LogoWrapper>
             </AppButtons>
-            <ButtonComponent />
+            <ButtonsComponent />
         </HeaderWrapper>
     )
 }

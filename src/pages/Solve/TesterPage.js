@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import { Spinner } from "react-bootstrap";
 import { FaTrashAlt } from "react-icons/fa";
 
-import { DEPLOYED_CONTRACTS } from "../../constants/chains";
+import { DEPLOYED_CONTRACTS, PROVIDERS } from "../../constants/chains";
 import { stylizeTokenId, tokenUriToTest } from "./helpers";
 import TesterCard from "../../components/TesterCard";
 import SolveTester from "./SolveTester";
@@ -141,6 +141,7 @@ const emptyTokenStats = {
 }
 
 export default function TesterPage ({ tokenId }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
     const correctChain = useSelector(state => state.chain.correctChain);
 
     const [tokenStats, setTokenStats] = useState(emptyTokenStats);
@@ -158,10 +159,15 @@ export default function TesterPage ({ tokenId }) {
     } = useWeb3React();
 
     const testerContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].TesterCreator,
+        DEPLOYED_CONTRACTS[selectedChain].TesterCreator,
         require('../../abis/TesterCreator.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+        PROVIDERS[selectedChain]
     )
+
+    useEffect(() => {
+        setTester(null)
+        setTokenStats(emptyTokenStats)
+    }, [selectedChain])
 
     useEffect(() => {
         const fetchTokenData = async () => {
@@ -200,8 +206,8 @@ export default function TesterPage ({ tokenId }) {
                 }))
             }
         }
-        fetchTokenData()
-    }, [])
+        if (tester === null) fetchTokenData();
+    }, [tester])
 
     useEffect(() => {
         const fetchTester = async () => {

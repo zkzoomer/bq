@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
+import { useSelector } from 'react-redux'
 import { ethers } from "ethers"; 
 import styled from "styled-components"
 import Spinner from 'react-bootstrap/Spinner';
 
-import { DEPLOYED_CONTRACTS } from "../../constants/chains"
+import { DEPLOYED_CONTRACTS, PROVIDERS } from "../../constants/chains"
 import { theme } from "../../theme"
 import TesterCard from "../../components/TesterCard";
 
@@ -113,6 +114,7 @@ const LoadingCard = () => {
 }
 
 export function Browse () {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
     const [cards, setCards] = useState({
         totalSupply: 0,
         loadedCards: 0,
@@ -120,18 +122,27 @@ export function Browse () {
         testerCards: []
     })
 
-    const testerContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].TesterCreator,
-        require('../../abis/TesterCreator.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
-    )
+    useEffect(() => {
+        setCards({
+            totalSupply: 0,
+            loadedCards: 0,
+            cardsToLoad: 0,
+            testerCards: []
+        })
+    }, [selectedChain])
 
     // first page load, get the total supply, and load the first one
     useEffect(() => {
         const fetchData = async () => {
+            const testerContract = new ethers.Contract(
+                DEPLOYED_CONTRACTS[selectedChain].TesterCreator,
+                require('../../abis/TesterCreator.json')['abi'],
+                PROVIDERS[selectedChain]
+            )
+
             const totalSupply = parseInt(await testerContract.totalSupply())
             const firstTokenId = parseInt(await testerContract.tokenByIndex(0))
-            const firstCard = await loadCard(firstTokenId)
+            const firstCard = await loadCard(testerContract, firstTokenId)
 
             setCards({
                 totalSupply,
@@ -140,8 +151,8 @@ export function Browse () {
                 testerCards: [firstCard]
             })
         }
-        fetchData()
-    }, [])
+        if (cards.totalSupply === 0) fetchData();
+    }, [cards.totalSupply])
 
     window.onscroll = function (e) {
 		if (
@@ -161,8 +172,14 @@ export function Browse () {
     // add cards one by one for all the load cards prompted
     useEffect(() => {
         const addCard = async () => {
+            const testerContract = new ethers.Contract(
+                DEPLOYED_CONTRACTS[selectedChain].TesterCreator,
+                require('../../abis/TesterCreator.json')['abi'],
+                PROVIDERS[selectedChain]
+            )
+
             const tokenId = parseInt(await testerContract.tokenByIndex( cards.loadedCards ))
-            const newCard = await loadCard(tokenId)
+            const newCard = await loadCard(testerContract, tokenId)
 
             setCards(prevState => ({       
                 ...prevState,
@@ -175,7 +192,7 @@ export function Browse () {
         }
     }, [cards.testerCards, cards.cardsToLoad])
 
-    const loadCard = async (tokenId) => {
+    const loadCard = async (testerContract, tokenId) => {
         const _tokenStats = await testerContract.getTester(tokenId)
         const _owner = await testerContract.ownerOf(tokenId)
         const tokenStats = {

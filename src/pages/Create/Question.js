@@ -113,15 +113,6 @@ const RenderQuestionWrapper = styled.article`
     margin-bottom:auto;
     text-align:center; 
     padding: 15px 25px 5px 25px;
-
-    /* height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: start;
-    min-height: 150px;
-    padding: 15px 25px 5px 25px; */
 `
 
 const RenderAnswerWrapper = styled.div`

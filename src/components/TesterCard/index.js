@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { useSelector } from 'react-redux'
 import styled from "styled-components"
 import { FaTrophy, FaExternalLinkAlt } from "react-icons/fa"
 import { NavLink } from "react-router-dom"
@@ -7,6 +8,7 @@ import Jazzicon from "@metamask/jazzicon";
 import { stylizeTokenId } from "../../pages/Solve/helpers"
 import { truncateAddress } from "../../hooks/utils"
 import { ZERO_ADDRESS } from "../../constants/values"
+import { CURRENCIES } from "../../constants/chains"
 
 const CardWrapper = styled.div`
     position: relative;
@@ -147,6 +149,7 @@ const StyledIdenticon = styled.div`
 
 // TODO: link to credential owners when it has been solved SOMEWHERE
 export default function TesterCard ({ tokenStats, isClickable }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
 
     function Identicon () {
         const ref = useRef();
@@ -182,7 +185,7 @@ export default function TesterCard ({ tokenStats, isClickable }) {
                         <PrizeWrapper>
                             <InlineBold>Prize: </InlineBold>
                             {tokenStats.prize}
-                            &nbsp;MATIC
+                            &nbsp;{CURRENCIES[selectedChain]}
                         </PrizeWrapper>
                     :
                         <SolversWrapper>

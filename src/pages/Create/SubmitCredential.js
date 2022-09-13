@@ -12,7 +12,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 import { SubmitButton } from "../../components/Button"
 import { isValidAddress } from "../../hooks/utils"
-import { DEPLOYED_CONTRACTS } from "../../constants/chains";
+import { CURRENCIES, DEPLOYED_CONTRACTS } from "../../constants/chains";
 import { MAX_UINT32, ZERO_ADDRESS } from "../../constants/values";
 import { theme } from "../../theme";
 import TimeLimitInput from "./TimeLimitInput";
@@ -147,6 +147,7 @@ const ButtonWrapper = styled.div`
 `
 
 export default function SubmitCredential ({ submission, setSubmission, setProgressBarState }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
     const correctChain = useSelector(state => state.chain.correctChain);
     const [buttonState, setButtonState] = useState({
         enabled: false,
@@ -240,7 +241,7 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
         }))
 
         const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
-        const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
+        const testerCreator = new Contract(DEPLOYED_CONTRACTS[selectedChain].TesterCreator, TesterCreatorABI, library.getSigner())
 
         // TODO: handle tx via a promise, show modal for success / failure
         try {
@@ -341,7 +342,7 @@ export default function SubmitCredential ({ submission, setSubmission, setProgre
                                     placeholder='0'
                                     value={submission.prize.value}
                                 />
-                                <PrizeInputCurrency>MATIC</PrizeInputCurrency>
+                                <PrizeInputCurrency>{CURRENCIES[selectedChain]}</PrizeInputCurrency>
                             </PrizeInputBoxWrapper>
                         <ErrorText>{submission.prize.error}</ErrorText>
                     </PrizeInputWrapper>

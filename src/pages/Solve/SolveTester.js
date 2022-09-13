@@ -16,7 +16,6 @@ import { getNumberOfQuestions } from "./helpers";
 
 import { _groth16FullProve } from "../../proof/snarkjs";
 import { genProof } from "../../proof/utils";
-import { rootFromLeafArray } from "../../proof/poseidonMerkle";
 
 const QuestionsWrapper = styled.div`
     display: flex;
@@ -41,6 +40,7 @@ for (var i = 1; i <= MAX_QUESTIONS; i++) {
 }
 
 export default function SolveTester ({ tokenStats, tester }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
     const correctChain = useSelector(state => state.chain.correctChain);
     const dispatch = useDispatch()
 
@@ -56,9 +56,6 @@ export default function SolveTester ({ tokenStats, tester }) {
         account,
         chainId,
     } = useWeb3React();
-
-    const verifyAnswersWasmPath = ("https://bafybeie2civnvp337qpkphcswy7fteyzo3ovwdtumvuvl676vbpy4owwmy.ipfs.dweb.link/verify_answers.wasm");
-    const verifyAnswersZkeyPath = ("https://bafybeib76t3xuz3zgwshupevycbkfvgln6a7laqpnnqj2ajiv2sambyfke.ipfs.dweb.link/verify_answers_final.zkey");
 
     useEffect(() => {
         // must be on the correct chain, and account cannot be owner
@@ -111,7 +108,7 @@ export default function SolveTester ({ tokenStats, tester }) {
         }))
 
         const TesterCreatorABI = require('../../abis/TesterCreator.json')['abi']
-        const testerCreator = new Contract(DEPLOYED_CONTRACTS[chainId].TesterCreator, TesterCreatorABI, library.getSigner())
+        const testerCreator = new Contract(DEPLOYED_CONTRACTS[selectedChain].TesterCreator, TesterCreatorABI, library.getSigner())
 
         // TODO: set manual gas so that tx fails if not correct proof
         try {

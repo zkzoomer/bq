@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
+import { useSelector } from 'react-redux'
 import { ethers } from "ethers"; 
 import styled from "styled-components"
 import Spinner from 'react-bootstrap/Spinner';
 
-import { DEPLOYED_CONTRACTS } from "../../constants/chains"
+import { DEPLOYED_CONTRACTS, PROVIDERS } from "../../constants/chains"
 import { theme } from "../../theme"
 import TesterCard from "../../components/TesterCard";
 
@@ -124,21 +125,23 @@ const LoadingCard = () => {
 }
 
 export default function ProfileGallery ({ address, page, cards, setCards }) {
+    const selectedChain = useSelector(state => state.chain.selectedChain);
 
     const testerContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].TesterCreator,
+        DEPLOYED_CONTRACTS[selectedChain].TesterCreator,
         require('../../abis/TesterCreator.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+        PROVIDERS[selectedChain]
     )
-    const credenitalsContract = new ethers.Contract(
-        DEPLOYED_CONTRACTS[80001].Credentials,
+
+    const credentialsContract = new ethers.Contract(
+        DEPLOYED_CONTRACTS[selectedChain].Credentials,
         require('../../abis/Credentials.json')['abi'],
-        new ethers.providers.JsonRpcProvider(process.env.REACT_APP_QUICKNODE_KEY)
+        PROVIDERS[selectedChain]
     )
 
     const getContract = () => {
         if (page === 'gained') {  // returning the credentials contract
-            return credenitalsContract
+            return credentialsContract
         } else if (page === 'owned') {  // returning the testing contract
             return testerContract
         }
@@ -235,9 +238,9 @@ export default function ProfileGallery ({ address, page, cards, setCards }) {
                 <EmptyText>
                     {
                         page === 'gained' ? 
-                        'This account does not have any credentials'
+                        'This account did not gain any credentials'
                     :
-                        'This account does not own any credentials'
+                        'This account did not create any credentials'
                     }
                 </EmptyText>
             )
